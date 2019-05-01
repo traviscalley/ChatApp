@@ -32,5 +32,5 @@ public interface RemoteUser extends java.rmi.Remote
     /**
      * Get the name of the user.
      */
-    String toString() throws RemoteException;
+    String getName() throws RemoteException;
 }

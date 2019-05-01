@@ -1,5 +1,6 @@
 package RemoteChat;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface Chatroom extends java.rmi.Remote
@@ -37,4 +38,29 @@ public interface Chatroom extends java.rmi.Remote
      * @throws ChatException if the given ID doesn't correspond to a User
      */
     String deleteUser(long userID) throws RemoteException;
+
+    /**
+     *
+     * @param content String of the message contents
+     * @param parentID A positive number is the Message this Message is replying to.
+     *                 A nonpositive value means that this message has no parent
+     * @return Id of newly created message
+     * @throws RemoteException
+     */
+    long createMessage(String content, long parentID) throws RemoteException;
+
+    /**
+     *
+     * @return array of IDs of all the parent messages
+     * @throws RemoteException
+     */
+    long[] getRootMessages() throws RemoteException;
+
+
+    Message getMessage(long id) throws RemoteException;
+
+    int likeMessage(long id) throws RemoteException;
+
+    int dislikeMessage(long id) throws RemoteException;
+
 }

@@ -46,7 +46,29 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom
     public String deleteUser(long userID) throws RemoteException {
         return null;
     }
-    // end of LocalChatroom implementation
+
+
+    public long[] getRootMessages(){
+        return null;
+    }
+
+
+    public Message getMessage(long id){
+        return null;
+    }
+
+    public int likeMessage(long id){
+        return -1;
+    }
+
+    public int dislikeMessage(long id) {
+        return -1;
+    }
+
+    public long createMessage(String content, long parentID){
+        return -1;
+    }
+
 
     private class UserImpl extends UnicastRemoteObject implements RemoteUser
     {
@@ -77,6 +99,10 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom
         @Override
         public synchronized void changeName(String newName) throws RemoteException {
             name = newName;
+        }
+
+        public synchronized String getName() {
+            return name;
         }
     }
     // end of UserImpl implementation

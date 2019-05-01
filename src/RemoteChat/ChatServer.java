@@ -1,115 +1,47 @@
 package RemoteChat;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Logger;
 
-import static java.util.concurrent.TimeUnit.MINUTES;
-
-public class ChatServer
+public interface ChatServer extends Remote
 {
-    public static final String CHATROOM_NAME = "CS735_PROJECT_ROOM";
-
-    private final LocalChatroom chatroom;
-    private Registry registry;
+    /**
+     * All users in the Chatroom. This may only be any approximation if
+     * accounts are added/removed while this call is taking place.
+     *
+     * @return a newly allocated array with all the users in the Chatroom.
+     * @throws RemoteException
+     */
+    long[] getAllUsers() throws RemoteException;
 
     /**
-     * Creates a server for the given bank.
+     * A remote user.
+     *
+     * @param userID the ID of the user to be returned.
+     * @return a remote user (stub) backed by the corresponding user in the chatroom
+     * @throws ChatException if the given ID is not valid
      */
-    public ChatServer(LocalChatroom chatroom) {
-        this.chatroom = chatroom;
-    }
+    RemoteUser getRemoteUser(long userID) throws RemoteException;
 
     /**
-     * Starts the server by binding it to a registry.
+     * Creates a new user.
      *
-     * <ul>
-     *
-     * <li>If {@code port} is positive, the server attempts to locate a registry at this port.</li>
-     *
-     * <li>If {@code port} is negative, the server attempts to start a new registry at this
-     * port.</li>
-     *
-     * <li>If {@code port} is 0, the server attempts to start a new registry at a randomly chosen
-     * port.</li>
-     *
-     * </ul>
-     *
-     * @return the registry port
+     * @return the ID of the newly created User, which is guaranteed to be positive
+     * and different from all other User IDs.
      */
-    public synchronized int start(int port) throws RemoteException {
-        if (registry != null)
-            System.err.println("Error server is already running on port: " + port);
-        Registry reg;
-        if (port > 0) { // registry already exists
-            reg = LocateRegistry.getRegistry(port);
-        } else if (port < 0) { // create on given port
-            port = -port;
-            reg = LocateRegistry.createRegistry(port);
-        } else { // create registry on random port
-            Random rand = new Random();
-            int tries = 0;
-            while (true) {
-                port = 50000 + rand.nextInt(10000);
-                try {
-                    reg = LocateRegistry.createRegistry(port);
-                    break;
-                } catch (RemoteException e) {
-                    if (++tries < 10 && e.getCause() instanceof java.net.BindException)
-                        continue;
-                    throw e;
-                }
-            }
-        }
-        reg.rebind(chatroom.name, chatroom);
-        registry = reg;
-        return port;
-    }
+    long createUser(String name) throws RemoteException;
 
     /**
-     * Stops the server by removing the bank form the registry.  The bank is left exported.
+     * Deletes an existing user.
+     *
+     * @return the name of the User that was closed.
+     * @throws ChatException if the given ID doesn't correspond to a User
      */
-    public synchronized void stop() {
-        if (registry != null) {
-            try {
-                registry.unbind(chatroom.name);
-            } catch (Exception e) {
-                Logger.getLogger("cs735_835").warning(String.format("unable to stop: %s%n", e.getMessage()));
-            } finally {
-                registry = null;
-            }
-        }
-    }
+    String deleteUser(long userID) throws RemoteException;
 
-    /**
-     * Command-line program.  Single (optional) argument is a port number (see {@link #start(int)}).
-     */
-    public static void main(String[] args) throws Exception {
-        int port = 0;
-        if (args.length > 0)
-            port = Integer.parseInt(args[0]);
-        LocalChatroom chatroom = new LocalChatroom(CHATROOM_NAME);
-        ChatServer server = new ChatServer(chatroom);
-        try {
-            port = server.start(port);
-            System.out.printf("server running on port %d%n", port);
-            ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
-        } catch (RemoteException e) {
-            Throwable t = e.getCause();
-            if (t instanceof java.net.ConnectException)
-                System.err.println("unable to connect to registry: " + t.getMessage());
-            else if (t instanceof java.net.BindException)
-                System.err.println("cannot start registry: " + t.getMessage());
-            else
-                System.err.println("cannot start server: " + e.getMessage());
-            UnicastRemoteObject.unexportObject(chatroom, false);
-        }
-        Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
-    }
+
+    Chatroom getRemoteChatroom(long Id) throws RemoteException;
+
+    long createChatRoom() throws RemoteException;
+
 }
