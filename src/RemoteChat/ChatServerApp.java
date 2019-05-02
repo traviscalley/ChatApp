@@ -10,8 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Logger;
 
-public class ChatServerApp
-{
+public class ChatServerApp {
     public static final String CHATROOM_NAME = "CS735_PROJECT_ROOM";
 
     private final ChatServer server;
@@ -47,27 +46,33 @@ public class ChatServerApp
         Registry reg;
         if (port > 0) { // registry already exists
             reg = LocateRegistry.getRegistry(port);
-        } else if (port < 0) { // create on given port
-            port = -port;
+        } else { // create on given port
+            port = 12345;
             reg = LocateRegistry.createRegistry(port);
-        } else { // create registry on random port
-            Random rand = new Random();
-            int tries = 0;
-            while (true) {
-                port = 50000 + rand.nextInt(10000);
-                try {
-                    reg = LocateRegistry.createRegistry(port);
-                    break;
-                } catch (RemoteException e) {
-                    if (++tries < 10 && e.getCause() instanceof java.net.BindException)
-                        continue;
-                    throw e;
-                }
-            }
         }
         reg.rebind(CHATROOM_NAME, server);
         registry = reg;
         return port;
+//            port = -port;
+//            reg = LocateRegistry.createRegistry(port);
+//        } else { // create registry on random port
+//            Random rand = new Random();
+//            int tries = 0;
+//            while (true) {
+//                port = 50000 + rand.nextInt(10000);
+//                try {
+//                    reg = LocateRegistry.createRegistry(port);
+//                    break;
+//                } catch (RemoteException e) {
+//                    if (++tries < 10 && e.getCause() instanceof java.net.BindException)
+//                        continue;
+//                    throw e;
+//                }
+//            }
+//        }
+//        reg.rebind(CHATROOM_NAME, server);
+//        registry = reg;
+//        return port;
     }
 
     /**
