@@ -7,18 +7,19 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class LocalChatroom extends UnicastRemoteObject implements Chatroom
-{
+public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     private static final long serialVersionUID = -7917490423989282914L;
     public final String name;
     private Map<Long, RemoteUser> users;
-    private AtomicLong userID;
+    private Map<Long, RemoteUser> blockedUsers;
+    private Map<Long, Message> messages; // key: message ID
 
 
     public LocalChatroom(String name) throws RemoteException {
         this.name = name;
         users = new ConcurrentHashMap<>();
-        userID = new AtomicLong(1);
+        blockedUsers = new ConcurrentHashMap<>();
+        messages = new ConcurrentHashMap<>();
     }
 
     public String toString() {
@@ -27,7 +28,13 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom
 
     @Override
     public long[] getAllUsers() throws RemoteException {
-        return new long[0];
+        java.util.Set<Long> keys = users.keySet();
+        long[] allUsers = new long[keys.size()];
+        int i = 0;
+        for (Long k: keys) {
+            allUsers[i++] = k;
+        }
+        return allUsers;
     }
 
     @Override
@@ -36,15 +43,16 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom
     }
 
     @Override
-    public long createUser(String name) throws RemoteException {
-        long ID = userID.getAndIncrement();
+    public long addUser(String name, long ID) throws RemoteException {
         users.putIfAbsent(ID, new UserImpl(ID, name));
         return ID;
     }
 
     @Override
-    public String deleteUser(long userID) throws RemoteException {
-        return null;
+    public String removeUser(long userID) throws RemoteException {
+        if (!users.containsKey(userID))
+            throw new ChatException("User with ID:" + userID + " does not exist!");
+        return users.remove(userID).getName();
     }
 
 
@@ -54,7 +62,9 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom
 
 
     public Message getMessage(long id){
-        return null;
+        if (!messages.containsKey(id))
+            throw new ChatException("Message doesn't exist!");
+        return messages.remove(id);
     }
 
     public int likeMessage(long id){
@@ -66,7 +76,9 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom
     }
 
     public long createMessage(String content, long parentID){
-        return -1;
+        long msgID = -1;
+        Message newMsg = new Message(parentID, content, msgID); // @ TODO change ID
+        return msgID;
     }
 
 
@@ -84,16 +96,6 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom
         @Override
         public long userID() throws RemoteException {
             return ID;
-        }
-
-        @Override
-        public void send(String message) throws RemoteException {
-
-        }
-
-        @Override
-        public void like(long msgID) throws RemoteException {
-
         }
 
         @Override

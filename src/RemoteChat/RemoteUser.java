@@ -12,16 +12,6 @@ public interface RemoteUser extends java.rmi.Remote
     long userID() throws RemoteException;
 
     /**
-     * Send a message to the chatroom.
-     */
-    void send(String message) throws RemoteException;
-
-    /**
-     * Like a message in the chatroom.
-     */
-    void like(long msgID) throws RemoteException;
-
-    /**
      * Changes the name of the current User.
      *
      * @param newName the name to be changed to.

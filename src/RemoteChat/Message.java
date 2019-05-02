@@ -1,5 +1,6 @@
 package RemoteChat;
 
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 

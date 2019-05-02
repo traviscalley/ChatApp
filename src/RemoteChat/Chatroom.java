@@ -29,7 +29,7 @@ public interface Chatroom extends java.rmi.Remote
      * @return the ID of the newly created User, which is guaranteed to be positive
      * and different from all other User IDs.
      */
-    long createUser(String name) throws RemoteException;
+    long addUser(String name, long ID) throws RemoteException;
 
     /**
      * Deletes an existing user.
@@ -37,7 +37,7 @@ public interface Chatroom extends java.rmi.Remote
      * @return the name of the User that was closed.
      * @throws ChatException if the given ID doesn't correspond to a User
      */
-    String deleteUser(long userID) throws RemoteException;
+    String removeUser(long userID) throws RemoteException;
 
     /**
      *
@@ -56,11 +56,6 @@ public interface Chatroom extends java.rmi.Remote
      */
     long[] getRootMessages() throws RemoteException;
 
-
     Message getMessage(long id) throws RemoteException;
-
-    int likeMessage(long id) throws RemoteException;
-
-    int dislikeMessage(long id) throws RemoteException;
 
 }
