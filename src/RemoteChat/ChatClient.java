@@ -13,7 +13,7 @@ public class ChatClient {
     private final Chatroom chatroom;
 
     private ChatClient(String service) throws RemoteException, NotBoundException, MalformedURLException {
-        chatroom = (Chatroom) java.rmi.Naming.lookup(service);
+        chatroom = (Chatroom)java.rmi.Naming.lookup(service);
     }
 
     private void addUser(User user) throws RemoteException {
@@ -34,7 +34,7 @@ public class ChatClient {
     }
 
     public static void main(String[] args) throws Exception {
-        String service = "rmi://" + 12345 + "/" + ChatServerApp.CHATROOM_NAME; // @TODO undo hardcoding
+        String service = "rmi://127.0.0.1:" + 51350 + "/" + ChatServerApp.CHATROOM_NAME; // @TODO undo hardcoding
 
         ChatClient client = new ChatClient(service);
         try {

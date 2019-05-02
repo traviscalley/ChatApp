@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class ChatServerApp {
     public static final String CHATROOM_NAME = "CS735_PROJECT_ROOM";
 
-    private final ChatServer server;
+    private volatile ChatServer server;
     private Registry registry;
     private final Executor exec = Executors.newFixedThreadPool(50);
 
@@ -31,7 +31,11 @@ public class ChatServerApp {
      * Creates a server for the given bank.
      */
     public ChatServerApp() {
-        server = new LocalChatServer();
+        try {
+            server = new LocalChatServer();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -58,7 +62,7 @@ public class ChatServerApp {
         if (port > 0) { // registry already exists
             reg = LocateRegistry.getRegistry(port);
         } else { // create on given port
-            port = 12345;
+            port = 51350;
             reg = LocateRegistry.createRegistry(port);
         }
         reg.rebind(CHATROOM_NAME, server);
