@@ -63,26 +63,6 @@ public class ChatServerApp {
         reg.rebind(CHATROOM_NAME, server);
         registry = reg;
         return port;
-//            port = -port;
-//            reg = LocateRegistry.createRegistry(port);
-//        } else { // create registry on random port
-//            Random rand = new Random();
-//            int tries = 0;
-//            while (true) {
-//                port = 50000 + rand.nextInt(10000);
-//                try {
-//                    reg = LocateRegistry.createRegistry(port);
-//                    break;
-//                } catch (RemoteException e) {
-//                    if (++tries < 10 && e.getCause() instanceof java.net.BindException)
-//                        continue;
-//                    throw e;
-//                }
-//            }
-//        }
-//        reg.rebind(CHATROOM_NAME, server);
-//        registry = reg;
-//        return port;
     }
 
     /**
