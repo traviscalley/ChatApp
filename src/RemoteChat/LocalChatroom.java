@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     private static final long serialVersionUID = -7917490423989282914L;
     public final String name;
+    private final AtomicLong messageID;
     private Map<Long, RemoteUser> users;
     private Map<Long, RemoteUser> blockedUsers;
     private Map<Long, Message> messages; // key: message ID
@@ -20,21 +21,11 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         users = new ConcurrentHashMap<>();
         blockedUsers = new ConcurrentHashMap<>();
         messages = new ConcurrentHashMap<>();
+        messageID = new AtomicLong(1);
     }
 
     public String toString() {
         return "LocalChatroom: " + name;
-    }
-
-    @Override
-    public long[] getAllUsers() throws RemoteException {
-        java.util.Set<Long> keys = users.keySet();
-        long[] allUsers = new long[keys.size()];
-        int i = 0;
-        for (Long k: keys) {
-            allUsers[i++] = k;
-        }
-        return allUsers;
     }
 
     @Override
@@ -75,10 +66,23 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         return -1;
     }
 
-    public long createMessage(String content, long parentID){
-        long msgID = -1;
-        Message newMsg = new Message(parentID, content, msgID); // @ TODO change ID
-        return msgID;
+    public long createMessage(String content, long parentID, long userID) {
+        if (!users.containsKey(userID))
+            throw new ChatException("User: " + userID +
+                    " is not allowed to send messages in this room!");
+        if (blockedUsers.containsKey(userID))
+            throw new ChatException("Users" + userID + " is blocked and cannot" +
+                    " send messages in this Chatroom!");
+        Message newMsg = new Message(parentID, content, messageID.getAndIncrement()); // @ TODO change ID
+        return newMsg.getId();
+    }
+
+    public boolean blockUser(long userID) {
+        if (!users.containsKey(userID))
+            throw new ChatException("User: " + userID +
+                    " doesn't exist and cannot be blocked!");
+        //return blockedUsers.putIfAbsent(userID);
+        return false;
     }
 
 

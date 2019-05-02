@@ -6,15 +6,6 @@ import java.rmi.RemoteException;
 public interface Chatroom extends java.rmi.Remote
 {
     /**
-     * All users in the Chatroom. This may only be any approximation if
-     * accounts are added/removed while this call is taking place.
-     *
-     * @return a newly allocated array with all the users in the Chatroom.
-     * @throws RemoteException
-     */
-    long[] getAllUsers() throws RemoteException;
-
-    /**
      * A remote user.
      *
      * @param userID the ID of the user to be returned.
@@ -40,6 +31,14 @@ public interface Chatroom extends java.rmi.Remote
     String removeUser(long userID) throws RemoteException;
 
     /**
+     * Blocks an existing user.
+     *
+     * @returns a boolean if the block was successful
+     * @throws ChatException if the given user isn't blocked
+     */
+    boolean blockUser(long userID) throws RemoteException;
+
+    /**
      *
      * @param content String of the message contents
      * @param parentID A positive number is the Message this Message is replying to.
@@ -47,7 +46,7 @@ public interface Chatroom extends java.rmi.Remote
      * @return Id of newly created message
      * @throws RemoteException
      */
-    long createMessage(String content, long parentID) throws RemoteException;
+    long createMessage(String content, long parentID, long userID) throws RemoteException;
 
     /**
      *
