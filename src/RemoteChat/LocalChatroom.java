@@ -41,10 +41,10 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     }
 
     @Override
-    public long removeUser(long userID) throws RemoteException {
-        if (!users.containsKey(userID))
-            throw new ChatException("User with ID:" + userID + " does not exist!");
-        return users.remove(userID).id;
+    public long removeUser(User remove) throws RemoteException {
+        if (!users.containsKey(remove.id))
+            throw new ChatException("User with ID:" + remove.id + " does not exist!");
+        return users.remove(remove.id).id;
     }
 
     public long blockUser(User block) {
@@ -66,11 +66,21 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         return rootMsgs;
     }
 
-
     public Message getMessage(long id){
         if (!messages.containsKey(id))
             throw new ChatException("Message doesn't exist!");
         return messages.remove(id);
+    }
+
+    public long createMessage(String content, long parentID, long userID) {
+        if (!users.containsKey(userID))
+            throw new ChatException("User: " + userID +
+                    " is not allowed to send messages in this room!");
+        if (blockedUsers.containsKey(userID))
+            throw new ChatException("Users" + userID + " is blocked and cannot" +
+                    " send messages in this Chatroom!");
+        Message newMsg = new Message(parentID, content, messageID.getAndIncrement()); // @ TODO change ID
+        return newMsg.getId();
     }
 
     public int likeMessage(long id){
@@ -83,16 +93,5 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         if (!messages.containsKey(id))
             throw new ChatException("Message does not exist!");
         return messages.get(id).dislike();
-    }
-
-    public long createMessage(String content, long parentID, long userID) {
-        if (!users.containsKey(userID))
-            throw new ChatException("User: " + userID +
-                    " is not allowed to send messages in this room!");
-        if (blockedUsers.containsKey(userID))
-            throw new ChatException("Users" + userID + " is blocked and cannot" +
-                    " send messages in this Chatroom!");
-        Message newMsg = new Message(parentID, content, messageID.getAndIncrement()); // @ TODO change ID
-        return newMsg.getId();
     }
 }

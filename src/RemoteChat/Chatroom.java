@@ -28,7 +28,7 @@ public interface Chatroom extends java.rmi.Remote
      * @return the name of the User that was closed.
      * @throws ChatException if the given ID doesn't correspond to a User
      */
-    long removeUser(long userID) throws RemoteException;
+    long removeUser(User remove) throws RemoteException;
 
     /**
      * Blocks an existing user.
