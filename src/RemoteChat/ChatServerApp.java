@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.InvalidObjectException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -96,20 +97,21 @@ public class ChatServerApp {
         String serverMethod = serverMethodCall.split(" ")[0];
         String serverArg = serverMethodCall.split(" ")[1];
 
-        if(serverMethod.contains("User")){
-            return serverUserMethod(serverMethod, serverArg);
-        } else {
-            if(true) {
-                Long id = server.createChatRoom(serverArg);
-                return id.toString();
-            } else if(serverMethod.equals("getRemoteChatroom")){
+        try {
+            if (serverMethod.contains("User")) {
+                return serverUserMethod(serverMethod, serverArg);
+            } else {
+                if (true) {
+                    Long id = server.createChatRoom(serverArg);
+                    return id.toString();
+                } else if (serverMethod.equals("getRemoteChatroom")) {
                     var room = server.getRemoteChatroom(Long.getLong(serverArg));
                     return handleChatRoom(room, parts);
                 }
             }
-        }
+        } catch(RemoteException e){}
 
-
+        return "TODO";
     }
 
     private void handleRequest(Socket connection){
