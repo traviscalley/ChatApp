@@ -21,7 +21,7 @@ public interface Chatroom extends java.rmi.Remote
      * @return a remote user (stub) backed by the corresponding user in the chatroom
      * @throws ChatException if the given ID is not valid
      */
-    RemoteUser getRemoteUser(long userID) throws RemoteException;
+    User getUser(long userID) throws RemoteException;
 
     /**
      * Creates a new user.

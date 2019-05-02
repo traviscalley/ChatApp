@@ -31,7 +31,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom
     }
 
     @Override
-    public RemoteUser getRemoteUser(long userID) throws RemoteException {
+    public User getUser(long userID) throws RemoteException {
         return null;
     }
 
