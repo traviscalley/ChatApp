@@ -12,7 +12,7 @@ public interface Chatroom extends java.rmi.Remote
      * @return a remote user (stub) backed by the corresponding user in the chatroom
      * @throws ChatException if the given ID is not valid
      */
-    RemoteUser getRemoteUser(long userID) throws RemoteException;
+    User getUser(long userID) throws RemoteException;
 
     /**
      * Creates a new user.
@@ -20,7 +20,7 @@ public interface Chatroom extends java.rmi.Remote
      * @return the ID of the newly created User, which is guaranteed to be positive
      * and different from all other User IDs.
      */
-    long addUser(String name, long ID) throws RemoteException;
+    long addUser(User add) throws RemoteException;
 
     /**
      * Deletes an existing user.
@@ -28,7 +28,7 @@ public interface Chatroom extends java.rmi.Remote
      * @return the name of the User that was closed.
      * @throws ChatException if the given ID doesn't correspond to a User
      */
-    String removeUser(long userID) throws RemoteException;
+    long removeUser(long userID) throws RemoteException;
 
     /**
      * Blocks an existing user.
@@ -36,7 +36,7 @@ public interface Chatroom extends java.rmi.Remote
      * @returns a boolean if the block was successful
      * @throws ChatException if the given user isn't blocked
      */
-    boolean blockUser(long userID) throws RemoteException;
+    long blockUser(User block) throws RemoteException;
 
     /**
      *

@@ -5,14 +5,6 @@ import java.rmi.RemoteException;
 
 public interface ChatServer extends Remote
 {
-    /**
-     * All users in the Chatroom. This may only be any approximation if
-     * accounts are added/removed while this call is taking place.
-     *
-     * @return a newly allocated array with all the users in the Chatroom.
-     * @throws RemoteException
-     */
-    long[] getAllUsers() throws RemoteException;
 
     /**
      * A remote user.
@@ -21,7 +13,7 @@ public interface ChatServer extends Remote
      * @return a remote user (stub) backed by the corresponding user in the chatroom
      * @throws ChatException if the given ID is not valid
      */
-    RemoteUser getRemoteUser(long userID) throws RemoteException;
+    User getUser(long userID) throws RemoteException;
 
     /**
      * Creates a new user.
@@ -42,6 +34,6 @@ public interface ChatServer extends Remote
 
     Chatroom getRemoteChatroom(long Id) throws RemoteException;
 
-    long createChatRoom() throws RemoteException;
+    long createChatRoom(String name) throws RemoteException;
 
 }

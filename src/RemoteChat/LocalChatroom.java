@@ -1,6 +1,5 @@
 package RemoteChat;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
@@ -9,11 +8,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     private static final long serialVersionUID = -7917490423989282914L;
-    public final String name;
-    private final AtomicLong messageID;
-    private Map<Long, RemoteUser> users;
-    private Map<Long, RemoteUser> blockedUsers;
+    private final String name;
+    private Map<Long, User> users;
+    private Map<Long, User> blockedUsers;
     private Map<Long, Message> messages; // key: message ID
+    private final AtomicLong messageID;
 
 
     public LocalChatroom(String name) throws RemoteException {
@@ -29,26 +28,42 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     }
 
     @Override
-    public RemoteUser getRemoteUser(long userID) throws RemoteException {
-        return null;
+    public User getUser(long userID) throws RemoteException {
+        if (!users.containsKey(userID))
+            throw new ChatException("User does not exist!");
+        return users.get(userID);
     }
 
     @Override
-    public long addUser(String name, long ID) throws RemoteException {
-        users.putIfAbsent(ID, new UserImpl(ID, name));
-        return ID;
+    public long addUser(User add) throws RemoteException {
+        users.putIfAbsent(add.id, add);
+        return add.id;
     }
 
     @Override
-    public String removeUser(long userID) throws RemoteException {
+    public long removeUser(long userID) throws RemoteException {
         if (!users.containsKey(userID))
             throw new ChatException("User with ID:" + userID + " does not exist!");
-        return users.remove(userID).getName();
+        return users.remove(userID).id;
     }
 
+    public long blockUser(User block) {
+        if (!users.containsKey(block.id))
+            throw new ChatException("User: " + block.id +
+                    " doesn't exist and cannot be blocked!");
+        User ret = blockedUsers.putIfAbsent(block.id, block);
+        if (ret != null)
+            return ret.id;
+        return -1;
+    }
 
     public long[] getRootMessages(){
-        return null;
+        java.util.Set<Long> keys = messages.keySet();
+        long[] rootMsgs = new long[keys.size()];
+        int i = 0;
+        for (Long k: keys)
+            rootMsgs[i++] = k;
+        return rootMsgs;
     }
 
 
@@ -59,11 +74,15 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     }
 
     public int likeMessage(long id){
-        return -1;
+        if (!messages.containsKey(id))
+            throw new ChatException("Message does not exist!");
+        return messages.get(id).like();
     }
 
     public int dislikeMessage(long id) {
-        return -1;
+        if (!messages.containsKey(id))
+            throw new ChatException("Message does not exist!");
+        return messages.get(id).dislike();
     }
 
     public long createMessage(String content, long parentID, long userID) {
@@ -76,40 +95,4 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         Message newMsg = new Message(parentID, content, messageID.getAndIncrement()); // @ TODO change ID
         return newMsg.getId();
     }
-
-    public boolean blockUser(long userID) {
-        if (!users.containsKey(userID))
-            throw new ChatException("User: " + userID +
-                    " doesn't exist and cannot be blocked!");
-        //return blockedUsers.putIfAbsent(userID);
-        return false;
-    }
-
-
-    private class UserImpl extends UnicastRemoteObject implements RemoteUser
-    {
-        private static final long serialVersionUID = -807467293818944318L;
-        private final long ID;
-        private String name;
-
-        public UserImpl(long id, String name) throws RemoteException{
-            ID = id;
-            this.name = name;
-        }
-
-        @Override
-        public long userID() throws RemoteException {
-            return ID;
-        }
-
-        @Override
-        public synchronized void changeName(String newName) throws RemoteException {
-            name = newName;
-        }
-
-        public synchronized String getName() {
-            return name;
-        }
-    }
-    // end of UserImpl implementation
 }
