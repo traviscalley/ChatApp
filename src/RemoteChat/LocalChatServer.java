@@ -91,4 +91,11 @@ public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
         return num;
 
     }
+
+    public void copyMessage(long srcID, long destID, long mID) throws RemoteException {
+        LocalChatroom src = rooms.get(srcID);
+        LocalChatroom dest = rooms.get(destID);
+        RemoteMessage msg = src.getMessage(mID);
+        dest.addMessage(mID, msg);
+    }
 }

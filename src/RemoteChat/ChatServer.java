@@ -40,4 +40,6 @@ public interface ChatServer extends Remote
 
     int incrementMessages(long id) throws RemoteException;
 
+    void copyMessage(long srcID, long destID, long mID) throws RemoteException;
+
 }

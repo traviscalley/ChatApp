@@ -56,8 +56,19 @@ public class ChatClient {
                 line = scanner.nextLine();
 
                 try {
+                // 10 <srcRoomID> <destRoomID> <msgID>
+                if(line.startsWith("10")) {
+                    String[] input = line.split(" ");
+                    if (input.length != 4)
+                        throw new IllegalArgumentException("");
+                    client.server.copyMessage(Long.valueOf(input[1]),
+                            Long.valueOf(input[2]),
+                            Long.valueOf(input[3]));
+                    System.out.println("Message " + input[3] + " was copied from room " +
+                            input[1] + " to room " + input[2]);
+                }
                 // 1 <roomname> - create room
-                if (line.startsWith("1")) {
+                else if (line.startsWith("1")) {
                     String input[]  = line.split(" ");
 
                     if (input.length != 2)
@@ -65,7 +76,7 @@ public class ChatClient {
 
                     long uid = client.server.createChatRoom(input[1]);
                     System.out.println("New ChatRoom made with name: " +
-                            input[1] + " and id: " + id);
+                            input[1] + " and id: " + uid);
                 }
                 // 2 <userId> <roomId> - add user to room
                 else if (line.startsWith("2")) {
@@ -166,8 +177,12 @@ public class ChatClient {
                     System.out.println("Type a message...");
                     String contents = scanner.nextLine();
                     long mid = 0;                                   // message id
-                    for (int i = 0; i < rooms.size(); i++)
-                        mid = rooms.get(i).createMessage(contents, pid, id);
+
+                    mid = rooms.get(0).createMessage(contents, pid, id);
+                    RemoteMessage msg = rooms.get(0).getMessage(mid);
+                    for (int i = 1; i < rooms.size(); i++)
+                        rooms.get(i).addMessage(mid, msg);
+
                     System.out.println("Message was created with id " + mid +
                             " and sent to " + rooms.size() + " room(s)");
                     client.server.incrementMessages(id);

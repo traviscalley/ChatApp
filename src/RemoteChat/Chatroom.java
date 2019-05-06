@@ -59,6 +59,6 @@ public interface Chatroom extends java.rmi.Remote {
 
     RemoteMessage getMessage(long id) throws RemoteException;
 
-    //Map<Long, RemoteMessage> getMessageMap() throws RemoteException;
+    void addMessage(long mid, RemoteMessage msg) throws RemoteException;
 
 }
