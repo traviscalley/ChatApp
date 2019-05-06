@@ -13,6 +13,8 @@ public interface Chatroom extends java.rmi.Remote {
      */
     User getUser(long userID) throws RemoteException;
 
+    String print() throws RemoteException;
+
     /**
      * Creates a new user.
      *

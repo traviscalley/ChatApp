@@ -2,10 +2,7 @@ package RemoteChat;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicLong;
@@ -16,7 +13,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     private Map<Long, User> users;
     private Map<Long, User> blockedUsers;
     private Map<Long, Message> messages; // key: message ID
-    private Set<Message> rootMessages;
+    private Set<Long> rootMessages;
     private final AtomicLong messageID;
 
 
@@ -34,20 +31,21 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         buf.append(prefix);
         buf.append(m.toString());
         for(long id : m.getChildren()){
+            buf.append("\n");
             var child = getMessage(id);
             buf.append(printChatThread(child, prefix + "    "));
         }
         return buf.toString();
     }
 
-    public String toString() {
+    public String print() {
         var buf = new StringBuffer();
         buf.append("== Room: ");
         buf.append(name);
         buf.append(" ==\n");
 
-        for(Message m : rootMessages)
-            buf.append(printChatThread(m, ""));
+        for(long id : rootMessages)
+            buf.append(printChatThread(messages.get(id), ""));
 
         return buf.toString();
     }
@@ -83,7 +81,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     }
 
     public long[] getRootMessages(){
-        return rootMessages.stream().mapToLong(m -> m.getId()).toArray();
+        return rootMessages.stream().mapToLong(x->x).toArray();
     }
 
     public Message getMessage(long id) {
@@ -97,12 +95,17 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         if (user == null)
             throw new ChatException("User: " + userID +
                     " is not allowed to send messages in this room!");
-        if (blockedUsers.containsKey(userID))
-            throw new ChatException("Users" + userID + " is blocked and cannot" +
+        if (blockedUsers.containsKey(userID)) {
+            System.out.println("Users" + userID + " is blocked and cannot" +
                     " send messages in this Chatroom!");
-        Message newMsg = new Message(parentID, content, messageID.getAndIncrement(), user); // @ TODO change ID
+            return -1;
+        }
+        Message newMsg = new Message(parentID, content, messageID.getAndIncrement(), user);
         if(parentID < 1)
-            rootMessages.add(newMsg);
+            rootMessages.add(newMsg.getId());
+        else
+            messages.get(parentID).addChild(newMsg.getId());
+        messages.putIfAbsent(newMsg.getId(), newMsg);
         return newMsg.getId();
     }
 

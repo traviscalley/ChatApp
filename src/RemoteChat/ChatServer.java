@@ -32,6 +32,7 @@ public interface ChatServer extends Remote
      */
     String deleteUser(long userID) throws RemoteException;
 
+    String printStats() throws RemoteException;
 
     Chatroom getRemoteChatroom(long Id) throws RemoteException;
 

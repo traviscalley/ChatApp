@@ -43,16 +43,17 @@ public class ChatClient {
 
         ChatClient client = new ChatClient(service);
         try {
-            long id = client.server.createUser("Travis");
-            User user = client.server.getUser(id);
             System.out.println("Welcome to our ChatServer!");
-            System.out.println("Your name is " + user.name + " and id is "
-                    + user.id);
-//            Message sentMsg = new Message(0, "Hello, world!", 1);
-//            client.sendMessage(user, sentMsg);
-
             Scanner scanner = new Scanner(System.in);
             String line;
+
+            System.out.println("What's your name?");
+            String usrName = scanner.nextLine();
+            long id = client.server.createUser(usrName);
+            User user = client.server.getUser(id);
+            System.out.println("Your name is " + user.name + " and id is "
+                    + user.id);
+
             while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
 
@@ -94,7 +95,7 @@ public class ChatClient {
                 else if (line.startsWith("5")) {
                     String[] input = line.split(" ");
                     Chatroom room = client.server.getRemoteChatroom(Long.valueOf(input[1]));
-                    System.out.println(room.toString());
+                    System.out.println(room.print());
                 }
                 // 6 <roomId> <messageId> - like message
                 else if (line.startsWith("6")) {
@@ -104,7 +105,7 @@ public class ChatClient {
                     msg.like();
                     System.out.println("Message " + input[2] + " was liked in room " +
                             input[1]);
-                    System.out.println("Likes/Dislikes: " + msg.getLikes() + "/" + msg.getDislikes());
+                    System.out.println("Likes: " + msg.getLikes());
                 }
                 // 7 <roomId> <messageId> - dislike message
                 else if (line.startsWith("7")) {
@@ -114,27 +115,27 @@ public class ChatClient {
                     msg.dislike();
                     System.out.println("Message " + input[2] + " was disliked in room " +
                             input[1]);
-                    System.out.println("Likes/Dislikes: " + msg.getLikes() + "/" + msg.getDislikes());
+                    System.out.println("Likes: " + msg.getLikes());
                 }
                 // 8 - print stats
                 else if (line.startsWith("8")) {
-                    System.out.println("NOT IMPLEMENTED");//client.server.printStats());
+                    System.out.println(client.server.printStats());
                 }
                 // 9 <roomId> <additional roomId (optional)> <parentId or 0> - create message
                 else if (line.startsWith("9")) {
                     String[] input = line.split(" ");
                     ArrayList<Chatroom> rooms = new ArrayList<>();
-                    Long pid = Long.valueOf(input[input.length-1]); // parent id
-                    for (int i = 1; i < input.length-2; i++)
+                    long pid = Long.valueOf(input[input.length-1]); // parent id
+                    for (int i = 1; i < input.length-1; i++)
                         rooms.add(client.server.getRemoteChatroom(Long.valueOf(input[i])));
 
                     System.out.println("Type a message...");
                     String contents = scanner.nextLine();
                     long mid = 0;                                   // message id
-                    for (int j = 0; j < rooms.size() - 1; j++)
-                        mid = rooms.get(j).createMessage(contents, pid, id);
+                    for (int i = 0; i < rooms.size(); i++)
+                        mid = rooms.get(i).createMessage(contents, pid, id);
                     System.out.println("Message was created with id " + mid +
-                            " and sent to rooms " + rooms.toString());
+                            " and sent to " + rooms.size() + " room(s)");
                 }
             }
         } catch (ChatException e) {
