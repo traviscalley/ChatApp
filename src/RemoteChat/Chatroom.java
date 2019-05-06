@@ -3,8 +3,7 @@ package RemoteChat;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface Chatroom extends java.rmi.Remote
-{
+public interface Chatroom extends java.rmi.Remote {
     /**
      * A remote user.
      *

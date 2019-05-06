@@ -1,18 +1,20 @@
 package RemoteChat;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class LocalChatServer implements ChatServer {
-
+public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
+    private static final long serialVersionUID = 2922902607870763074L;
     private final ConcurrentHashMap<Long, User> users;
     private final ConcurrentHashMap<Long, LocalChatroom> rooms;
     private final AtomicLong nextUserID;
     private final AtomicLong nextRoomID;
 
 
-    public LocalChatServer(){
+    public LocalChatServer() throws RemoteException {
         users = new ConcurrentHashMap<>();
         rooms = new ConcurrentHashMap<>();
         nextUserID = new AtomicLong(1);

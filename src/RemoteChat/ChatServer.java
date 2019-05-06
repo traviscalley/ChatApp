@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 
 public interface ChatServer extends Remote
 {
+    final String CHATROOM_NAME = "CS735_PROJECT_ROOM";
 
     /**
      * A remote user.

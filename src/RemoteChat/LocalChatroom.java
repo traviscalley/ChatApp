@@ -53,20 +53,20 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     }
 
     @Override
-    public User getUser(long userID) throws RemoteException {
+    public User getUser(long userID) {
         if (!users.containsKey(userID))
             throw new ChatException("User does not exist!");
         return users.get(userID);
     }
 
     @Override
-    public long addUser(User add) throws RemoteException {
+    public long addUser(User add) {
         users.putIfAbsent(add.id, add);
         return add.id;
     }
 
     @Override
-    public long removeUser(User remove) throws RemoteException {
+    public long removeUser(User remove) {
         if (!users.containsKey(remove.id))
             throw new ChatException("User with ID:" + remove.id + " does not exist!");
         return users.remove(remove.id).id;
@@ -86,7 +86,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         return rootMessages.stream().mapToLong(m -> m.getId()).toArray();
     }
 
-    public Message getMessage(long id){
+    public Message getMessage(long id) {
         if (!messages.containsKey(id))
             throw new ChatException("Message doesn't exist!");
         return messages.remove(id);
@@ -106,7 +106,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         return newMsg.getId();
     }
 
-    public int likeMessage(long id){
+    public int likeMessage(long id) {
         if (!messages.containsKey(id))
             throw new ChatException("Message does not exist!");
         return messages.get(id).like();
