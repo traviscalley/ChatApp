@@ -2,10 +2,8 @@ package RemoteChat;
 
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -40,7 +38,7 @@ public class ChatClient {
     }
 
     public static void main(String[] args) throws Exception {
-        String service = "rmi://127.0.0.1:" + 51350 + "/" + ChatServerApp.CHATROOM_NAME; // @TODO undo hardcoding
+        String service = "rmi://127.0.0.1:" + 51350 + "/" + ChatServerApp.CHATROOM_NAME;
 
         ChatClient client = new ChatClient(service);
             System.out.println("Welcome to our ChatServer!");

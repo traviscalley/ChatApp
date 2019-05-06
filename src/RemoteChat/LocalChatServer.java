@@ -1,12 +1,9 @@
 package RemoteChat;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
-import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
@@ -18,7 +15,7 @@ public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
     private final AtomicLong nextRoomID;
 
 
-    public LocalChatServer() throws RemoteException {
+    LocalChatServer() throws RemoteException {
         users = new ConcurrentHashMap<>();
         rooms = new ConcurrentHashMap<>();
         //totLikes = new ConcurrentHashMap<>();
@@ -47,7 +44,7 @@ public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
     }
 
     public String printStats(long id) throws RemoteException {
-        var stats = new StringBuffer();
+        StringBuilder stats = new StringBuilder();
 
         User usr = users.get(id);
         stats.append(usr.name);
