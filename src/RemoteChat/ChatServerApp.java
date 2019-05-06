@@ -85,12 +85,60 @@ public class ChatServerApp {
         }
     }
 
-    private String serverUserMethod(String method, String arg){
-        return "TODO";
+    private String serverUserMethod(String method, String arg) throws RemoteException {
+        if(method.equals("getUser")) {
+            var userId = Long.valueOf(arg);
+            User user = server.getUser(userId);
+            String userStr = "id:" + user.id + ";name:" + user.name;
+            return userStr;
+        } else if(method.equals("createUser")) {
+            Long id = server.createUser(arg);
+            return "ID:" + id.toString();
+        } else if(method.equals("deleteUser")){
+            var userId = Long.valueOf(arg);
+            String deleted = server.deleteUser(userId);
+            return "DELETED:" + deleted;
+        }
+
+        return "ERROR:Could not parse";
     }
 
-    private String handleChatRoom(Chatroom room, List<String> input) {
-        return "TODO";
+    private String handleChatRoom(Chatroom room, List<String> input) throws RemoteException {
+        String methodCall = input.remove(0);
+        var methodParts = new ArrayList<>(Arrays.asList(methodCall.split(":")));
+        String methodName = methodParts.remove(0);
+        var methodArgs = methodParts;
+
+        long userId = Long.getLong(methodArgs.remove(0));
+        Long retLong = null;
+
+        if(methodName.equals("addUser")){
+            User user = server.getUser(userId);
+            retLong = room.addUser(user);
+        } else if(methodName.equals("removeUser")){
+            User user = server.getUser(userId);
+            retLong = room.removeUser(user);
+        } else if(methodName.equals("blockUser")){
+            User user = server.getUser(userId);
+            retLong =  room.blockUser(user);
+        } else if(methodName.equals("getUser")){
+            User user = server.getUser(userId);
+            String userStr = "id:" + user.id + ";name:" + user.name;
+            return userStr;
+        } else if(methodName.equals("createMessage")){
+            long parentId = Long.getLong(methodArgs.remove(0));
+            StringBuffer sb = new StringBuffer();
+            while(!methodArgs.isEmpty())
+                sb.append(methodArgs.remove(0));
+            retLong = room.createMessage(sb.toString(), parentId, userId);
+        } else if(methodName.equals("getMessage")) {
+            return room.getMessage(userId).toString();
+        } else if(methodName.equals("getMessages")) {
+            return room.toString();
+        }
+
+        assert(retLong != null);
+        return "ID:" + retLong.toString();
     }
 
     private String handleInput(String input){
@@ -98,24 +146,27 @@ public class ChatServerApp {
         int i = 0;
         long clientId = Long.getLong(parts.remove(0));
         String serverMethodCall = parts.remove(0);
-        String serverMethod = serverMethodCall.split(" ")[0];
-        String serverArg = serverMethodCall.split(" ")[1];
+        var serverMethodParts = new ArrayList<>(Arrays.asList(serverMethodCall.split(":")));
+        String serverMethod = serverMethodParts.remove(0);
+        var serverArgs = serverMethodParts;
 
         try {
             if (serverMethod.contains("User")) {
-                return serverUserMethod(serverMethod, serverArg);
+                return serverUserMethod(serverMethod, serverArgs.remove(0));
             } else {
-                if (true) {
-                    Long id = server.createChatRoom(serverArg);
+                if (serverMethod.equals("createChatRoom")) {
+                    Long id = server.createChatRoom(serverArgs.remove(0));
                     return id.toString();
                 } else if (serverMethod.equals("getRemoteChatroom")) {
-                    var room = server.getRemoteChatroom(Long.getLong(serverArg));
+                    var room = server.getRemoteChatroom(Long.getLong(serverArgs.remove(0)));
                     return handleChatRoom(room, parts);
                 }
             }
-        } catch(RemoteException e){}
+        } catch(Exception e){
+            return "EXCEPTION:" + e.getMessage();
+        }
 
-        return "TODO";
+        return "ERROR:Could not parse";
     }
 
     private void handleRequest(Socket connection){

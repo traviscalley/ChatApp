@@ -2,8 +2,12 @@ package RemoteChat;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
@@ -12,6 +16,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     private Map<Long, User> users;
     private Map<Long, User> blockedUsers;
     private Map<Long, Message> messages; // key: message ID
+    private Set<Message> rootMessages;
     private final AtomicLong messageID;
 
 
@@ -21,10 +26,30 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         blockedUsers = new ConcurrentHashMap<>();
         messages = new ConcurrentHashMap<>();
         messageID = new AtomicLong(1);
+        rootMessages = new ConcurrentSkipListSet<>();
+    }
+
+    private String printChatThread(Message m, String prefix){
+        var buf = new StringBuffer();
+        buf.append(prefix);
+        buf.append(m.toString());
+        for(long id : m.getChildren()){
+            var child = getMessage(id);
+            buf.append(printChatThread(child, prefix + "    "));
+        }
+        return buf.toString();
     }
 
     public String toString() {
-        return "LocalChatroom: " + name;
+        var buf = new StringBuffer();
+        buf.append("== Room: ");
+        buf.append(name);
+        buf.append(" ==\n");
+
+        for(Message m : rootMessages)
+            buf.append(printChatThread(m, ""));
+
+        return buf.toString();
     }
 
     @Override
@@ -57,13 +82,8 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         return -1;
     }
 
-    public long[] getRootMessages() {
-        java.util.Set<Long> keys = messages.keySet();
-        long[] rootMsgs = new long[keys.size()];
-        int i = 0;
-        for (Long k: keys)
-            rootMsgs[i++] = k;
-        return rootMsgs;
+    public long[] getRootMessages(){
+        return rootMessages.stream().mapToLong(m -> m.getId()).toArray();
     }
 
     public Message getMessage(long id) {
@@ -73,13 +93,16 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     }
 
     public long createMessage(String content, long parentID, long userID) {
-        if (!users.containsKey(userID))
+        User user = users.getOrDefault(userID, null);
+        if (user == null)
             throw new ChatException("User: " + userID +
                     " is not allowed to send messages in this room!");
         if (blockedUsers.containsKey(userID))
             throw new ChatException("Users" + userID + " is blocked and cannot" +
                     " send messages in this Chatroom!");
-        Message newMsg = new Message(parentID, content, messageID.getAndIncrement()); // @ TODO change ID
+        Message newMsg = new Message(parentID, content, messageID.getAndIncrement(), user); // @ TODO change ID
+        if(parentID < 1)
+            rootMessages.add(newMsg);
         return newMsg.getId();
     }
 
