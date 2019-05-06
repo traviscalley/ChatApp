@@ -1,11 +1,12 @@
 package RemoteChat;
 
-import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Message implements Serializable {
+public class Message extends UnicastRemoteObject implements RemoteMessage {
+    private static final long serialVersionUID = -1891091551243657306L;
     private int likes;
     private boolean deleted;
     private final long  id;
@@ -14,7 +15,7 @@ public class Message implements Serializable {
     private String content;
     private final ArrayList<Long> children;
 
-    public Message(long parent, String message, long id, User user){
+    public Message(long parent, String message, long id, User user) throws RemoteException {
         synchronized (this) {
             likes = 0;
             this.parent = parent;
@@ -27,15 +28,28 @@ public class Message implements Serializable {
     }
 
     public synchronized int like(){
+        if (deleted)
+            return likes;
         return ++likes;
     }
 
-    public synchronized int dislike(){
+    public synchronized int dislike() {
+        if (deleted)
+            return likes;
         return --likes;
     }
 
     public synchronized int getLikes() {
         return likes;
+    }
+
+    @Override
+    public synchronized boolean delete() throws RemoteException {
+        if (!deleted) {
+            deleted = true;
+            content = "<DELETED>";
+        }
+        return deleted;
     }
 
     public synchronized boolean isDeleted() {
@@ -50,6 +64,10 @@ public class Message implements Serializable {
         return parent;
     }
 
+    public synchronized User getUser() {
+        return poster;
+    }
+
     public synchronized String getContent() {
         return content;
     }
@@ -62,8 +80,9 @@ public class Message implements Serializable {
         children.add(id);
     }
 
-    @Override
-    public String toString(){
+    public String print(){
+        if (deleted)
+            return poster.name + "'s message was deleted because of too many dislikes!";
         return poster.name + ": " + "[" + getLikes() + "] - " + getContent() + " - [" + getId() + "]";
     }
 

@@ -2,6 +2,7 @@ package RemoteChat;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Map;
 
 public interface Chatroom extends java.rmi.Remote {
     /**
@@ -56,6 +57,8 @@ public interface Chatroom extends java.rmi.Remote {
      */
     long[] getRootMessages() throws RemoteException;
 
-    Message getMessage(long id) throws RemoteException;
+    RemoteMessage getMessage(long id) throws RemoteException;
+
+    //Map<Long, RemoteMessage> getMessageMap() throws RemoteException;
 
 }

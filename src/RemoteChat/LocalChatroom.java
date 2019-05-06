@@ -12,9 +12,10 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     private final String name;
     private Map<Long, User> users;
     private Map<Long, User> blockedUsers;
-    private Map<Long, Message> messages; // key: message ID
+    private Map<Long, RemoteMessage> messages; // key: message ID
     private Set<Long> rootMessages;
-    private final AtomicLong messageID;
+    private static final AtomicLong messageID = new AtomicLong(1);
+    private final Timer timer;
 
 
     public LocalChatroom(String name) throws RemoteException {
@@ -22,30 +23,33 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         users = new ConcurrentHashMap<>();
         blockedUsers = new ConcurrentHashMap<>();
         messages = new ConcurrentHashMap<>();
-        messageID = new AtomicLong(1);
+        //messageID = new AtomicLong(1);
         rootMessages = new ConcurrentSkipListSet<>();
+        timer = new Timer();
+        DislikeChecker checker = new DislikeChecker(messages);
+        timer.scheduleAtFixedRate(new TimerTask() {public void run() { checker.run(); }},
+                0, 15000);
     }
 
-    private String printChatThread(Message m, String prefix){
-        var buf = new StringBuffer();
+    private String printChatThread(RemoteMessage m, String prefix) throws RemoteException{
+        var buf = new StringBuffer("\n");
         buf.append(prefix);
-        buf.append(m.toString());
+        buf.append(m.print());
         for(long id : m.getChildren()){
-            buf.append("\n");
             var child = getMessage(id);
             buf.append(printChatThread(child, prefix + "    "));
         }
         return buf.toString();
     }
 
-    public String print() {
+    public String print() throws RemoteException {
         var buf = new StringBuffer();
         buf.append("== Room: ");
         buf.append(name);
         buf.append(" ==\n");
 
         for(long id : rootMessages)
-            buf.append(printChatThread(messages.get(id), ""));
+            buf.append(printChatThread(getMessage(id), ""));
 
         return buf.toString();
     }
@@ -84,13 +88,17 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         return rootMessages.stream().mapToLong(x->x).toArray();
     }
 
-    public Message getMessage(long id) {
+    public RemoteMessage getMessage(long id) {
         if (!messages.containsKey(id))
             throw new ChatException("Message doesn't exist!");
-        return messages.remove(id);
+        return messages.get(id);
     }
 
-    public long createMessage(String content, long parentID, long userID) {
+    public Map<Long, RemoteMessage> getMessageMap() throws RemoteException {
+        return Collections.unmodifiableMap(messages);
+    }
+
+    public long createMessage(String content, long parentID, long userID) throws RemoteException {
         User user = users.getOrDefault(userID, null);
         if (user == null)
             throw new ChatException("User: " + userID +
@@ -100,7 +108,13 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
                     " send messages in this Chatroom!");
             return -1;
         }
-        Message newMsg = new Message(parentID, content, messageID.getAndIncrement(), user);
+
+        RemoteMessage newMsg;
+        try {
+            newMsg = new Message(parentID, content, messageID.getAndIncrement(), user);
+        } catch (RemoteException e) {
+            throw new ChatException("Message was unable to be created!");
+        }
         if(parentID < 1)
             rootMessages.add(newMsg.getId());
         else
@@ -109,13 +123,13 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         return newMsg.getId();
     }
 
-    public int likeMessage(long id) {
+    public int likeMessage(long id) throws RemoteException {
         if (!messages.containsKey(id))
             throw new ChatException("Message does not exist!");
         return messages.get(id).like();
     }
 
-    public int dislikeMessage(long id) {
+    public int dislikeMessage(long id) throws RemoteException {
         if (!messages.containsKey(id))
             throw new ChatException("Message does not exist!");
         return messages.get(id).dislike();
