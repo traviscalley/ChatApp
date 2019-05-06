@@ -2,6 +2,7 @@ package RemoteChat;
 
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +43,6 @@ public class ChatClient {
         String service = "rmi://127.0.0.1:" + 51350 + "/" + ChatServerApp.CHATROOM_NAME; // @TODO undo hardcoding
 
         ChatClient client = new ChatClient(service);
-        try {
             System.out.println("Welcome to our ChatServer!");
             Scanner scanner = new Scanner(System.in);
             String line;
@@ -57,16 +57,25 @@ public class ChatClient {
             while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
 
+                try {
                 // 1 <roomname> - create room
                 if (line.startsWith("1")) {
-                    String name = line.substring(1, line.length());
-                    long uid = client.server.createChatRoom(name);
+                    String input[]  = line.split(" ");
+
+                    if (input.length != 2)
+                        throw new IllegalArgumentException("");
+
+                    long uid = client.server.createChatRoom(input[1]);
                     System.out.println("New ChatRoom made with name: " +
-                            name + " and id: " + id);
+                            input[1] + " and id: " + id);
                 }
                 // 2 <userId> <roomId> - add user to room
                 else if (line.startsWith("2")) {
                     String[] input = line.split(" ");
+
+                    if (input.length != 3)
+                        throw new IllegalArgumentException("");
+
                     User toAdd = client.server.getUser(Long.valueOf(input[1]));
                     Chatroom room = client.server.getRemoteChatroom(Long.valueOf(input[2]));
                     room.addUser(toAdd);
@@ -76,6 +85,10 @@ public class ChatClient {
                 // 3 <userId> <roomId> - remove user to room
                 else if (line.startsWith("3")) {
                     String[] input = line.split(" ");
+
+                    if (input.length != 3)
+                        throw new IllegalArgumentException("");
+
                     User toRemove = client.server.getUser(Long.valueOf(input[1]));
                     Chatroom room = client.server.getRemoteChatroom(Long.valueOf(input[2]));
                     room.removeUser(toRemove);
@@ -85,6 +98,10 @@ public class ChatClient {
                 // 4 <userId> <roomId> - block user to room
                 else if (line.startsWith("4")) {
                     String[] input = line.split(" ");
+
+                    if (input.length != 3)
+                        throw new IllegalArgumentException("");
+
                     User toBlock = client.server.getUser(Long.valueOf(input[1]));
                     Chatroom room = client.server.getRemoteChatroom(Long.valueOf(input[2]));
                     room.blockUser(toBlock);
@@ -94,36 +111,55 @@ public class ChatClient {
                 // 5 <roomId> - print contents of room
                 else if (line.startsWith("5")) {
                     String[] input = line.split(" ");
+
+                    if (input.length != 2)
+                        throw new IllegalArgumentException("");
+
                     Chatroom room = client.server.getRemoteChatroom(Long.valueOf(input[1]));
                     System.out.println(room.print());
                 }
                 // 6 <roomId> <messageId> - like message
                 else if (line.startsWith("6")) {
                     String[] input = line.split(" ");
+
+                    if (input.length != 3)
+                        throw new IllegalArgumentException("");
+
                     Chatroom room = client.server.getRemoteChatroom(Long.valueOf(input[1]));
-                    Message msg = room.getMessage(Long.valueOf(input[2]));
+                    RemoteMessage msg = (RemoteMessage) room.getMessage(Long.valueOf(input[2]));
                     msg.like();
                     System.out.println("Message " + input[2] + " was liked in room " +
                             input[1]);
-                    System.out.println("Likes: " + msg.getLikes());
                 }
                 // 7 <roomId> <messageId> - dislike message
                 else if (line.startsWith("7")) {
                     String[] input = line.split(" ");
+
+                    if (input.length != 3)
+                        throw new IllegalArgumentException("");
+
                     Chatroom room = client.server.getRemoteChatroom(Long.valueOf(input[1]));
-                    Message msg = room.getMessage(Long.valueOf(input[2]));
+                    RemoteMessage msg = (RemoteMessage) room.getMessage(Long.valueOf(input[2]));
                     msg.dislike();
                     System.out.println("Message " + input[2] + " was disliked in room " +
                             input[1]);
-                    System.out.println("Likes: " + msg.getLikes());
                 }
                 // 8 - print stats
                 else if (line.startsWith("8")) {
-                    System.out.println(client.server.printStats());
+                    String[] input = line.split(" ");
+
+                    if (input.length != 1)
+                        throw new IllegalArgumentException("");
+
+                    System.out.println(client.server.printStats(id));
                 }
                 // 9 <roomId> <additional roomId (optional)> <parentId or 0> - create message
                 else if (line.startsWith("9")) {
                     String[] input = line.split(" ");
+
+                    if (input.length < 3)
+                        throw new IllegalArgumentException("");
+
                     ArrayList<Chatroom> rooms = new ArrayList<>();
                     long pid = Long.valueOf(input[input.length-1]); // parent id
                     for (int i = 1; i < input.length-1; i++)
@@ -136,10 +172,14 @@ public class ChatClient {
                         mid = rooms.get(i).createMessage(contents, pid, id);
                     System.out.println("Message was created with id " + mid +
                             " and sent to " + rooms.size() + " room(s)");
+                    client.server.incrementMessages(id);
+                }
+            } catch (ChatException e) {
+                    System.out.printf("chat exception: %s%n", e.getMessage());
+                }
+                catch (IllegalArgumentException e) {
+                    System.out.println("illegal arguments! please retype command!");
                 }
             }
-        } catch (ChatException e) {
-            System.out.printf("chat exception: %s%n", e.getMessage());
-        }
     }
 }
