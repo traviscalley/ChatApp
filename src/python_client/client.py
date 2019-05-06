@@ -22,32 +22,41 @@ helpText = """
 """
 
 def sendSocket(message):
+    #print("connecting to " + HOST + PORT)
     soc = socket.create_connection((HOST,PORT))
+    #print(soc)
     soc.send(bytes(message, "utf-8"))
 
-    return soc.recv(8192)
+    return soc.recv(8192).decode("utf-8")
 
 def sendRequest(args):
+    global USERID
+    print("USERID is: " + str(USERID))
     message = str(USERID)
     for arg in args:
-        for methodName, args in kwargs.values():
+        for methodName, methodArgs in arg.items():
             message += ";" + methodName
-                if isinstance(args, list):
-                    for arg in argList:
-                        message += ":" + str(arg)
-                else:
-                    message += str(arg)
+            if isinstance(methodArgs, list):
+                for methodArg in methodArgs:
+                    message += ":" + str(methodArg)
+            else:
+                message += ":" + str(methodArgs)
+
+    message += '\n'
 
     print("sending message: ")
     print(message)
 
-    return sendSockets(message)
+    return sendSocket(message)
 
 def create_user(name):
-    kwargs = [
+    args = [
         { "createUser": name }
     ]
     response = sendRequest(args)
+    print("response is " + str(response)) 
+    my_id = response.split(":")[-1]
+    print("My ID is: " + str(my_id))
     return response.split(":")[-1]
 
 def parse_args():
@@ -55,18 +64,19 @@ def parse_args():
     port = sys.argv[2]
     name = sys.argv[3]
 
+    print((host, port, name))
     return (host, port, name)
 
 def createRoom(cmd):
     args = [
-        { "createChatroom": cmd[1] }
+        { "createChatRoom": cmd[1] }
     ]
     return sendRequest(args)
 
 def addUser(cmd):
     roomId = int(cmd[2])
     args = [
-        { "getRemoteChatRoom": roomId }, 
+        { "getRemoteChatroom": roomId }, 
         { "addUser": cmd[1] }
     ]
     return sendRequest(args)
@@ -74,7 +84,7 @@ def addUser(cmd):
 def removeUser(cmd):
     roomId = int(cmd[2])
     args = [
-        { "getRemoteChatRoom": roomId }, 
+        { "getRemoteChatroom": roomId }, 
         { "removeUser": cmd[1] }
     ]
     return sendRequest(args)
@@ -82,7 +92,7 @@ def removeUser(cmd):
 def blockUser(cmd):
     roomId = int(cmd[2])
     args = [
-        { "getRemoteChatRoom": roomId }, 
+        { "getRemoteChatroom": roomId }, 
         { "blockUser": cmd[1] }
     ]
     return sendRequest(args)
@@ -90,7 +100,7 @@ def blockUser(cmd):
 def printRoom(cmd):
     roomId = int(cmd[1])
     args = [
-        { "getRemoteChatRoom": roomId }, 
+        { "getRemoteChatroom": roomId }, 
         { "getMessages": None }
     ]
     return sendRequest(args)
@@ -99,7 +109,7 @@ def likeMessage(cmd):
     roomId = int(cmd[1])
     msgId = int(cmd[2])
     args = [
-        { "getRemoteChatRoom": roomId }, 
+        { "getRemoteChatroom": roomId }, 
         { "likeMessage": mshId }
     ]
     return sendRequest(args)
@@ -108,31 +118,37 @@ def dislikeMessage(cmd):
     roomId = int(cmd[1])
     msgId = int(cmd[2])
     args = [
-        { "getRemoteChatRoom": roomId }, 
+        { "getRemoteChatroom": roomId }, 
         { "dislikeMessage": mshId }
     ]
+    return sendRequest(args)
 
 def printStats(cmd):
-    print "Not implemented"
+    print("Not implemented")
 
 def createMessage(cmd):
     roomId = int(cmd.pop(1))
     #parentId = int(cmd.pop(2))
     args = [
-        { "getRemoteChatRoom": roomId }, 
+        { "getRemoteChatroom": roomId }, 
         { "createMessage": cmd }
     ]
+    return sendRequest(args)
 
 def main():
+    global HOST, PORT, USERID
     HOST, PORT, username = parse_args()
 
-    USERID = create_user(username)
+    my_id = create_user(username)
+    print("my id is: " + str(my_id))
+    USERID = my_id.strip()
+    print("USERID is " + str(USERID))
 
     input_map = {
         1: createRoom,
         2: addUser,
         3: removeUser,
-        4: blockUSer,
+        4: blockUser,
         5: printRoom,
         6: likeMessage,
         7: dislikeMessage,
@@ -147,16 +163,16 @@ def main():
         except Exception:
             sys.exit(1)
         if cmd == "?":
-            print helpText
+            print(helpText)
             continue
 
         try:
             cmd = cmd.split(" ")
             num = int(cmd[0])
             func = input_map[num]
-            print func(cmd)
-        except Exception:
-            continue
+            print(func(cmd))
+        except Exception as e:
+            print(e)
 
 
 if __name__ == "__main__":

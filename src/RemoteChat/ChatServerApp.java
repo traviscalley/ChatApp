@@ -1,9 +1,6 @@
 package RemoteChat;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.InvalidObjectException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.Remote;
@@ -59,11 +56,11 @@ public class ChatServerApp {
         if (registry != null)
             System.err.println("Error server is already running on port: " + port);
         Registry reg;
-        if (port > 0) { // registry already exists
-            reg = LocateRegistry.getRegistry(port);
-        } else { // create on given port
-            port = 51350;
-            reg = LocateRegistry.createRegistry(port);
+        try {
+        reg = LocateRegistry.createRegistry(port);
+        } catch(Exception e){
+            System.err.println("Failed to open port " + port);
+            return -1;
         }
         reg.rebind(CHATROOM_NAME, server);
         registry = reg;
@@ -149,8 +146,8 @@ public class ChatServerApp {
 
     private String handleInput(String input){
         ArrayList<String> parts = new ArrayList<>(Arrays.asList(input.split(";")));
-        int i = 0;
-        long clientId = Long.getLong(parts.remove(0));
+        var client_string = parts.remove(0);
+        long clientId = Long.valueOf(client_string);
         String serverMethodCall = parts.remove(0);
         var serverMethodParts = new ArrayList<>(Arrays.asList(serverMethodCall.split(":")));
         String serverMethod = serverMethodParts.remove(0);
@@ -164,7 +161,7 @@ public class ChatServerApp {
                     Long id = server.createChatRoom(serverArgs.remove(0));
                     return id.toString();
                 } else if (serverMethod.equals("getRemoteChatroom")) {
-                    var room = server.getRemoteChatroom(Long.getLong(serverArgs.remove(0)));
+                    var room = server.getRemoteChatroom(Long.valueOf(serverArgs.remove(0)));
                     return handleChatRoom(room, parts);
                 }
             }
@@ -180,12 +177,13 @@ public class ChatServerApp {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(connection.getInputStream())
             );
-
-            String response = handleInput(in.readLine());
-            //TODO: write response
-
+            String input = in.readLine();
+            String response = handleInput(input);
+            PrintWriter writer = new PrintWriter(connection.getOutputStream(), true);
+            writer.println(response);
+            writer.flush();
         } catch(IOException e){
-            System.err.println("failed to read from socket");
+            System.err.println("failed to read or write from socket");
         }
     }
 
@@ -197,9 +195,24 @@ public class ChatServerApp {
         try {
             serverSocket = new ServerSocket(port);
         } catch(IOException e){
-            System.err.println("Failed to open port");
-            return;
+            Random rand = new Random();
+            int tries = 0;
+            while (true) {
+                port = 50000 + rand.nextInt(10000);
+                try {
+                    serverSocket = new ServerSocket(port);
+                } catch (IOException ioe) {
+                    if (++tries > 10) {
+                        System.err.println("Failed to open port");
+                        return;
+                    } else
+                        break;
+                }
+            }
+
         }
+
+        System.out.println("Socket Server running on port: " + port);
 
         while(true){
             try {
@@ -216,7 +229,7 @@ public class ChatServerApp {
      * Command-line program.  Single (optional) argument is a port number (see {@link #startRMI(int)}).
      */
     public static void main(String[] args) throws Exception {
-        int port = 0;
+        int port = 51350;
         if (args.length > 0)
             port = Integer.parseInt(args[0]);
         LocalChatroom chatroom = new LocalChatroom(CHATROOM_NAME);
@@ -224,6 +237,7 @@ public class ChatServerApp {
         try {
             port = server.startRMI(port);
             System.out.printf("server running on port %d%n", port);
+            server.startSockets(port+1);
             ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
         } catch (RemoteException e) {
             Throwable t = e.getCause();
