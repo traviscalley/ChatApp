@@ -22,16 +22,13 @@ helpText = """
 """
 
 def sendSocket(message):
-    #print("connecting to " + HOST + PORT)
     soc = socket.create_connection((HOST,PORT))
-    #print(soc)
     soc.send(bytes(message, "utf-8"))
 
     return soc.recv(8192).decode("utf-8")
 
 def sendRequest(args):
     global USERID
-    print("USERID is: " + str(USERID))
     message = str(USERID)
     for arg in args:
         for methodName, methodArgs in arg.items():
@@ -44,9 +41,6 @@ def sendRequest(args):
 
     message += '\n'
 
-    print("sending message: ")
-    print(message)
-
     return sendSocket(message)
 
 def create_user(name):
@@ -54,9 +48,7 @@ def create_user(name):
         { "createUser": name }
     ]
     response = sendRequest(args)
-    print("response is " + str(response)) 
     my_id = response.split(":")[-1]
-    print("My ID is: " + str(my_id))
     return response.split(":")[-1]
 
 def parse_args():
@@ -110,7 +102,7 @@ def likeMessage(cmd):
     msgId = int(cmd[2])
     args = [
         { "getRemoteChatroom": roomId }, 
-        { "likeMessage": mshId }
+        { "likeMessage": msgId }
     ]
     return sendRequest(args)
 
@@ -119,19 +111,24 @@ def dislikeMessage(cmd):
     msgId = int(cmd[2])
     args = [
         { "getRemoteChatroom": roomId }, 
-        { "dislikeMessage": mshId }
+        { "dislikeMessage": msgId }
     ]
     return sendRequest(args)
 
 def printStats(cmd):
-    print("Not implemented")
+    args = [
+        { "printStats": USERID }
+    ]
+    return sendRequest(args)
 
 def createMessage(cmd):
-    roomId = int(cmd.pop(1))
-    #parentId = int(cmd.pop(2))
+    function_num = cmd.pop(0)
+    roomId = int(cmd.pop(0))
+    parentId = int(cmd.pop(0))
+    msg = " ".join(cmd)
     args = [
         { "getRemoteChatroom": roomId }, 
-        { "createMessage": cmd }
+        { "createMessage": [USERID, parentId, msg] }
     ]
     return sendRequest(args)
 
@@ -140,9 +137,9 @@ def main():
     HOST, PORT, username = parse_args()
 
     my_id = create_user(username)
-    print("my id is: " + str(my_id))
     USERID = my_id.strip()
-    print("USERID is " + str(USERID))
+
+    print("You are user: " + USERID)
 
     input_map = {
         1: createRoom,

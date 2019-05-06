@@ -106,7 +106,10 @@ public class ChatServerApp {
         String methodName = methodParts.remove(0);
         var methodArgs = methodParts;
 
-        long userId = Long.getLong(methodArgs.remove(0));
+        long userId = -1;
+        try {
+            userId = Long.valueOf(methodArgs.remove(0));
+        } catch(Exception e){}
         Long retLong = null;
 
         if(methodName.equals("addUser")){
@@ -123,7 +126,7 @@ public class ChatServerApp {
             String userStr = "id:" + user.id + ";name:" + user.name;
             return userStr;
         } else if(methodName.equals("createMessage")){
-            long parentId = Long.getLong(methodArgs.remove(0));
+            long parentId = Long.valueOf(methodArgs.remove(0));
             StringBuffer sb = new StringBuffer();
             while(!methodArgs.isEmpty())
                 sb.append(methodArgs.remove(0));
@@ -131,7 +134,7 @@ public class ChatServerApp {
         } else if(methodName.equals("getMessage")) {
             return room.getMessage(userId).toString();
         } else if(methodName.equals("getMessages")) {
-            return room.toString();
+            return room.print();
         } else if(methodName.equals("likeMessage")) {
             Integer likes = room.getMessage(userId).like();
             return "LIKES:" + likes.toString();
@@ -156,14 +159,15 @@ public class ChatServerApp {
         try {
             if (serverMethod.contains("User")) {
                 return serverUserMethod(serverMethod, serverArgs.remove(0));
-            } else {
-                if (serverMethod.equals("createChatRoom")) {
-                    Long id = server.createChatRoom(serverArgs.remove(0));
-                    return id.toString();
-                } else if (serverMethod.equals("getRemoteChatroom")) {
-                    var room = server.getRemoteChatroom(Long.valueOf(serverArgs.remove(0)));
-                    return handleChatRoom(room, parts);
-                }
+            } else if (serverMethod.equals("createChatRoom")) {
+                Long id = server.createChatRoom(serverArgs.remove(0));
+                return "ID:" + id.toString();
+            } else if (serverMethod.equals("printStats")){
+                var userId = Long.valueOf(serverArgs.remove(0));
+                return "STATS:" + server.printStats(userId);
+            } else if (serverMethod.equals("getRemoteChatroom")) {
+                var room = server.getRemoteChatroom(Long.valueOf(serverArgs.remove(0)));
+                return handleChatRoom(room, parts);
             }
         } catch(Exception e){
             return "EXCEPTION:" + e.getMessage();
