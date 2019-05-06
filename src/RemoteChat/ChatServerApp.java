@@ -135,6 +135,12 @@ public class ChatServerApp {
             return room.getMessage(userId).toString();
         } else if(methodName.equals("getMessages")) {
             return room.toString();
+        } else if(methodName.equals("likeMessage")) {
+            Integer likes = room.getMessage(userId).like();
+            return "LIKES:" + likes.toString();
+        } else if(methodName.equals("dislikeMessage")) {
+        Integer likes = room.getMessage(userId).dislike();
+        return "LIKES:" + likes.toString();
         }
 
         assert(retLong != null);

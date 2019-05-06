@@ -7,6 +7,8 @@ import sys
 HOST = ""
 PORT = ""
 
+USERID = -1
+
 helpText = """
 1 <roomname> - create room
 2 <userId> <roomId> - add user to room
@@ -25,52 +27,106 @@ def sendSocket(message):
 
     return soc.recv(8192)
 
-def sendRequest(**kwargs):
-    message = ""
-    userID = kwargs.pop("userID")
-    if userID:
-        message += str(userID)
-    for methodName, argList in kwargs.values():
-        message += ";" + methodName
-            for arg in argList:
-                message += ":" + str(arg)
+def sendRequest(args):
+    message = str(USERID)
+    for arg in args:
+        for methodName, args in kwargs.values():
+            message += ";" + methodName
+                if isinstance(args, list):
+                    for arg in argList:
+                        message += ":" + str(arg)
+                else:
+                    message += str(arg)
 
     print("sending message: ")
     print(message)
 
     return sendSockets(message)
 
+def create_user(name):
+    kwargs = [
+        { "createUser": name }
+    ]
+    response = sendRequest(args)
+    return response.split(":")[-1]
 
+def parse_args():
+    host = sys.argv[1]
+    port = sys.argv[2]
+    name = sys.argv[3]
 
-def createRoom(*args):
-    pass
+    return (host, port, name)
 
-def addUser(*args):
-    pass
+def createRoom(cmd):
+    args = [
+        { "createChatroom": cmd[1] }
+    ]
+    return sendRequest(args)
 
-def removeUser(*args):
-    pass
+def addUser(cmd):
+    roomId = int(cmd[2])
+    args = [
+        { "getRemoteChatRoom": roomId }, 
+        { "addUser": cmd[1] }
+    ]
+    return sendRequest(args)
 
-def blockUser(*args):
-    pass
+def removeUser(cmd):
+    roomId = int(cmd[2])
+    args = [
+        { "getRemoteChatRoom": roomId }, 
+        { "removeUser": cmd[1] }
+    ]
+    return sendRequest(args)
 
-def printRoom(*args):
-    pass
+def blockUser(cmd):
+    roomId = int(cmd[2])
+    args = [
+        { "getRemoteChatRoom": roomId }, 
+        { "blockUser": cmd[1] }
+    ]
+    return sendRequest(args)
 
-def likeMessage(*args):
-    pass
+def printRoom(cmd):
+    roomId = int(cmd[1])
+    args = [
+        { "getRemoteChatRoom": roomId }, 
+        { "getMessages": None }
+    ]
+    return sendRequest(args)
 
-def dislikeMessage(*args):
-    pass
+def likeMessage(cmd):
+    roomId = int(cmd[1])
+    msgId = int(cmd[2])
+    args = [
+        { "getRemoteChatRoom": roomId }, 
+        { "likeMessage": mshId }
+    ]
+    return sendRequest(args)
 
-def printStats(*args):
-    pass
+def dislikeMessage(cmd):
+    roomId = int(cmd[1])
+    msgId = int(cmd[2])
+    args = [
+        { "getRemoteChatRoom": roomId }, 
+        { "dislikeMessage": mshId }
+    ]
 
-def createMessage(*args):
-    pass
+def printStats(cmd):
+    print "Not implemented"
+
+def createMessage(cmd):
+    roomId = int(cmd.pop(1))
+    #parentId = int(cmd.pop(2))
+    args = [
+        { "getRemoteChatRoom": roomId }, 
+        { "createMessage": cmd }
+    ]
 
 def main():
-    HOST, PORT = parse_args()
+    HOST, PORT, username = parse_args()
+
+    USERID = create_user(username)
 
     input_map = {
         1: createRoom,
@@ -95,11 +151,13 @@ def main():
             continue
 
         try:
-            num = int(cmd.split(" ")[0])
+            cmd = cmd.split(" ")
+            num = int(cmd[0])
             func = input_map[num]
-            func(cmd)
+            print func(cmd)
         except Exception:
             continue
-        
 
-        
+
+if __name__ == "__main__":
+    main()
