@@ -1,7 +1,9 @@
 package RemoteChat;
 
-public class User {
+import java.io.Serializable;
 
+public class User implements Serializable
+{
     public final long id;
     public final String name;
 

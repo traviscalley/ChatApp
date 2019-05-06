@@ -40,6 +40,12 @@ public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
         return user.name;
     }
 
+    public String printStats() {
+        var stats = new StringBuffer();
+
+
+        return stats.toString();
+    }
 
     public Chatroom getRemoteChatroom(long Id) {
         Chatroom room = rooms.getOrDefault(Id, null);

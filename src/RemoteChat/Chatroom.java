@@ -13,6 +13,8 @@ public interface Chatroom extends java.rmi.Remote {
      */
     User getUser(long userID) throws RemoteException;
 
+    String print() throws RemoteException;
+
     /**
      * Creates a new user.
      *
@@ -41,7 +43,7 @@ public interface Chatroom extends java.rmi.Remote {
      *
      * @param content String of the message contents
      * @param parentID A positive number is the Message this Message is replying to.
-     *                 A nonpositive value means that this message has no parent
+     *                 A '0' value means that this message has no parent
      * @return Id of newly created message
      * @throws RemoteException
      */

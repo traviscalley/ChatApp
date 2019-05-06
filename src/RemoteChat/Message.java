@@ -1,10 +1,11 @@
 package RemoteChat;
 
+import java.io.Serializable;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Message {
-
+public class Message implements Serializable {
     private int likes;
     private boolean deleted;
     private final long  id;
