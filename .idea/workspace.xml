@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2f0ea140-12f1-496f-9756-e6e7c91a1fa6" name="Default Changelist" comment="Added &quot;?&quot; command">
-      <change afterPath="$PROJECT_DIR$/src/RemoteChat/LikeGhostClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/RemoteChat/MessageGhostClient.java" afterDir="false" />
+    <list default="true" id="2f0ea140-12f1-496f-9756-e6e7c91a1fa6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChatApp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ChatApp.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RemoteChat/ChatClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RemoteChat/ChatClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RemoteChat/LocalChatroom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RemoteChat/LocalChatroom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RemoteChat/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RemoteChat/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/python_client/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/python_client/client.py" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="C:\Users\travi\Desktop\college\cs735\ChatApp\.idea\shelf/" />
@@ -23,8 +18,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/RemoteChat/ChatClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="40" column="36" selection-start-line="40" selection-start-column="36" selection-end-line="40" selection-end-column="36" />
+            <state relative-caret-position="425">
+              <caret line="25" column="65" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="65" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -46,15 +41,15 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/RemoteChat/LikeGhostClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
+            <state relative-caret-position="1722">
               <caret line="106" column="18" selection-start-line="106" selection-start-column="18" selection-end-line="106" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3693#3974#0" expanded="true" />
-                <element signature="e#3973#3974#0" expanded="true" />
+                <element signature="e#3711#3992#0" expanded="true" />
+                <element signature="e#3991#3992#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -79,6 +74,18 @@
               <caret line="124" column="8" selection-start-line="124" selection-start-column="8" selection-end-line="124" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/python_client/client.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="21" selection-start-line="21" selection-end-line="21" />
+              <folding>
+                <element signature="e#21#34#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -124,6 +131,7 @@
         <option value="$PROJECT_DIR$/src/RemoteChat/LocalChatroom.java" />
         <option value="$PROJECT_DIR$/src/RemoteChat/MessageGhostClient.java" />
         <option value="$PROJECT_DIR$/src/RemoteChat/LikeGhostClient.java" />
+        <option value="$PROJECT_DIR$/src/python_client/client.py" />
       </list>
     </option>
   </component>
@@ -174,7 +182,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557241276330" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557241461339" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
@@ -443,14 +451,21 @@
       <option name="project" value="LOCAL" />
       <updated>1557193252743</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="GhostMessageClient and GhostLikeDislikeClient are finished. But they need to be tested on Mica.">
+      <created>1557241317405</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1557241317405</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="23" width="1550" height="848" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16040269" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16040269" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -475,7 +490,7 @@
       <window_info anchor="right" id="Theme Preview" order="5" />
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
-      <window_info active="true" anchor="right" x="934" y="60" width="601" height="803" id="Run" order="8" sideWeight="0.49932885" visible="true" weight="0.39932886" />
+      <window_info anchor="right" x="934" y="60" width="601" height="803" id="Run" order="8" sideWeight="0.49932885" visible="true" weight="0.39932886" />
     </layout>
     <layout-to-restore>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1590604" />
@@ -522,7 +537,8 @@
     <MESSAGE value="Client is still done... need to fix total messages." />
     <MESSAGE value="Client is still done..." />
     <MESSAGE value="Added &quot;?&quot; command" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added &quot;?&quot; command" />
+    <MESSAGE value="GhostMessageClient and GhostLikeDislikeClient are finished. But they need to be tested on Mica." />
+    <option name="LAST_COMMIT_MESSAGE" value="GhostMessageClient and GhostLikeDislikeClient are finished. But they need to be tested on Mica." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/RemoteChat/UserImpl.java" />
@@ -605,23 +621,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/RemoteChat/ChatClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="40" column="36" selection-start-line="40" selection-start-column="36" selection-end-line="40" selection-end-column="36" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/python_client/client.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/RemoteChat/LocalChatroom.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1824">
@@ -642,6 +641,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/RemoteChat/ChatClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="65" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="65" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/RemoteChat/MessageGhostClient.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
@@ -656,12 +665,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/RemoteChat/LikeGhostClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
+        <state relative-caret-position="1722">
           <caret line="106" column="18" selection-start-line="106" selection-start-column="18" selection-end-line="106" selection-end-column="18" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3693#3974#0" expanded="true" />
-            <element signature="e#3973#3974#0" expanded="true" />
+            <element signature="e#3711#3992#0" expanded="true" />
+            <element signature="e#3991#3992#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/python_client/client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="21" selection-start-line="21" selection-end-line="21" />
+          <folding>
+            <element signature="e#21#34#0" expanded="true" />
           </folding>
         </state>
       </provider>

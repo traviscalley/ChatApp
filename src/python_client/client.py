@@ -19,6 +19,7 @@ helpText = """
 7 <roomId> <messageId> - dislike message
 8 - print stats
 9 <roomId> <parentId or 0> - create message
+10 <srcRoomID> <destRoomID> <msgID> - copy a message
 """
 
 def sendSocket(message):
