@@ -1,9 +1,12 @@
 package RemoteChat;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Message extends UnicastRemoteObject implements RemoteMessage {
     private static final long serialVersionUID = -1891091551243657306L;
@@ -14,6 +17,7 @@ public class Message extends UnicastRemoteObject implements RemoteMessage {
     private final User poster;
     private String content;
     private final ArrayList<Long> children;
+    private final LinkedBlockingQueue<Long> replies;
 
     public Message(long parent, String message, long id, User user) throws RemoteException {
         synchronized (this) {
@@ -24,6 +28,7 @@ public class Message extends UnicastRemoteObject implements RemoteMessage {
             this.children = new ArrayList<>();
             deleted = false;
             poster = user;
+            replies = new LinkedBlockingQueue<>();
         }
     }
 
@@ -66,7 +71,19 @@ public class Message extends UnicastRemoteObject implements RemoteMessage {
 
     public synchronized List<Long> getChildren() { return children; }
 
-    public synchronized void addChild(long id) { children.add(id); }
+    public synchronized void addChild(long id) {
+        children.add(id);
+        replies.add(id);
+    }
+
+    public Long getReply() throws RemoteException {
+        try {
+            return replies.take(); //blocks
+        } catch(InterruptedException e){
+            System.err.println("Thread was interupted while blocking!");
+        }
+        return null;
+    }
 
     public String print(){
         if (deleted)

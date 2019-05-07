@@ -28,4 +28,6 @@ public interface RemoteMessage extends Remote
     public void addChild(long id) throws RemoteException;
 
     public String print() throws RemoteException;
+
+    public Long getReply() throws RemoteException;
 }

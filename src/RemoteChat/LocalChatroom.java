@@ -123,7 +123,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         }
     }
 
-    public void addMessage(long mid, RemoteMessage msg) throws RemoteException {
+    public synchronized void addMessage(long mid, RemoteMessage msg) throws RemoteException {
         messages.putIfAbsent(mid, msg);
         rootMessages.add(mid);
     }

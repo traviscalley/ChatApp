@@ -48,21 +48,25 @@ public class MessageGhostClient {
         long rid = client.server.createChatRoom("Ghost Messaging Room");
         Chatroom ghostRoom = client.server.getRemoteChatroom(rid);
         System.out.println("Ghost Messaging Room ID: " + rid);
-
-        long mid = 0;
-
         long id1 = client.server.createUser("Ghost 1");
         User usr1 = client.server.getUser(id1);
         ghostRoom.addUser(usr1);
-        Timer t1 = new Timer();
-        t1.scheduleAtFixedRate(new GhostTask("Hey!", id1, ghostRoom, mid),
-                0, 8000);
 
         long id2 = client.server.createUser("Ghost 2");
         User usr2 = client.server.getUser(id2);
         ghostRoom.addUser(usr2);
+
+        long mid = ghostRoom.createMessage("Start of conversation", 0, id1);
+
+        Timer t1 = new Timer();
+        t1.scheduleAtFixedRate(new GhostTask("Hey!", id1, ghostRoom, mid),
+                0, 8000);
+
+        long mid2 = ghostRoom.createMessage("First Reply", mid, id2);
+
+
         Timer t2 = new Timer();
-        t2.scheduleAtFixedRate(new GhostTask("Hi!", id2, ghostRoom, mid+1),
+        t2.scheduleAtFixedRate(new GhostTask("Hi!", id2, ghostRoom, mid2),
                 9000, 7000);
 
         Timer t3 = new Timer();
