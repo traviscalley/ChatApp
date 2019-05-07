@@ -41,7 +41,7 @@ public class MessageGhostClient {
     }
 
     public static void main(String[] args) throws RemoteException, NotBoundException, MalformedURLException {
-        String service = "rmi://" + args[1] + ":" + args[2] + "/" + ChatServerApp.CHATROOM_NAME;
+        String service = "rmi://" + args[0] + ":" + args[1] + "/" + ChatServerApp.CHATROOM_NAME;
         MessageGhostClient client = new MessageGhostClient(service);
 
         // Room for them to speak in
