@@ -18,7 +18,6 @@ public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
     LocalChatServer() throws RemoteException {
         users = new ConcurrentHashMap<>();
         rooms = new ConcurrentHashMap<>();
-        //totLikes = new ConcurrentHashMap<>();
         totMessages = new ConcurrentHashMap<>();
         nextUserID = new AtomicLong(1);
         nextRoomID = new AtomicLong(1);

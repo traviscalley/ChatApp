@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2f0ea140-12f1-496f-9756-e6e7c91a1fa6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RemoteChat/ChatClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RemoteChat/ChatClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RemoteChat/ChatServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RemoteChat/ChatServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RemoteChat/Chatroom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RemoteChat/Chatroom.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/RemoteChat/LocalChatServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RemoteChat/LocalChatServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RemoteChat/LocalChatroom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RemoteChat/LocalChatroom.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="C:\Users\travi\Desktop\college\cs735\ChatApp\.idea\shelf/" />
@@ -22,7 +18,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/RemoteChat/ChatClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
+            <state relative-caret-position="255">
               <caret line="66" column="86" selection-start-line="66" selection-start-column="86" selection-end-line="66" selection-end-column="86" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -34,8 +30,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/RemoteChat/LocalChatServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1394">
-              <caret line="82" column="18" selection-start-line="82" selection-start-column="18" selection-end-line="82" selection-end-column="18" />
+            <state relative-caret-position="-797">
+              <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -46,36 +42,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/RemoteChat/LocalChatroom.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1399">
-              <caret line="128" column="19" selection-start-line="128" selection-start-column="19" selection-end-line="128" selection-end-column="19" />
+            <state relative-caret-position="158">
+              <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1163#1232#0" expanded="true" />
                 <element signature="e#1231#1232#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/RemoteChat/Chatroom.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="61" column="71" selection-start-line="61" selection-start-column="71" selection-end-line="61" selection-end-column="71" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/RemoteChat/ChatServer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="42" column="54" selection-start-line="42" selection-start-column="54" selection-end-line="42" selection-end-column="54" />
-              <folding>
-                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -114,14 +86,14 @@
         <option value="$PROJECT_DIR$/src/RemoteChat/Message.java" />
         <option value="$PROJECT_DIR$/src/RemoteChat/RemoteMessage.java" />
         <option value="$PROJECT_DIR$/src/RemoteChat/ChatServer.java" />
-        <option value="$PROJECT_DIR$/src/RemoteChat/LocalChatServer.java" />
         <option value="$PROJECT_DIR$/src/RemoteChat/Chatroom.java" />
         <option value="$PROJECT_DIR$/src/RemoteChat/LocalChatroom.java" />
         <option value="$PROJECT_DIR$/src/RemoteChat/ChatClient.java" />
+        <option value="$PROJECT_DIR$/src/RemoteChat/LocalChatServer.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="y" value="37" />
     <option name="width" value="977" />
@@ -162,7 +134,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557176201885" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557187263663" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
@@ -346,11 +318,18 @@
       <option name="project" value="LOCAL" />
       <updated>1557174725146</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Client is still done... need to fix total messages.">
+      <created>1557176228740</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1557176228740</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-6" y="30" width="781" height="840" extended-state="0" />
+    <frame x="-7" y="23" width="1550" height="848" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.15100671" />
@@ -370,7 +349,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32960895" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50067115" side_tool="true" weight="0.50418997" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.3282123" />
-      <window_info active="true" anchor="bottom" x="769" y="60" width="767" height="803" id="Run" maximized="true" order="10" sideWeight="0.49932885" type="WINDOWED" visible="true" weight="0.34463277" />
+      <window_info active="true" anchor="bottom" x="0" y="53" width="1536" height="811" id="Run" maximized="true" order="10" sideWeight="0.49932885" type="WINDOWED" visible="true" weight="0.34463277" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -422,7 +401,8 @@
     <MESSAGE value="Client almost done." />
     <MESSAGE value="Client is basically done." />
     <MESSAGE value="Client is done." />
-    <option name="LAST_COMMIT_MESSAGE" value="Client is done." />
+    <MESSAGE value="Client is still done... need to fix total messages." />
+    <option name="LAST_COMMIT_MESSAGE" value="Client is still done... need to fix total messages." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/RemoteChat/UserImpl.java" />
@@ -511,8 +491,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/RemoteChat/Chatroom.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="61" column="71" selection-start-line="61" selection-start-column="71" selection-end-line="61" selection-end-column="71" />
+        <state relative-caret-position="172">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/RemoteChat/LocalChatServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-797">
+          <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -521,8 +511,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/RemoteChat/LocalChatroom.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1399">
-          <caret line="128" column="19" selection-start-line="128" selection-start-column="19" selection-end-line="128" selection-end-column="19" />
+        <state relative-caret-position="158">
+          <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1163#1232#0" expanded="true" />
@@ -531,19 +521,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/RemoteChat/LocalChatServer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1394">
-          <caret line="82" column="18" selection-start-line="82" selection-start-column="18" selection-end-line="82" selection-end-column="18" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/RemoteChat/ChatClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
+        <state relative-caret-position="255">
           <caret line="66" column="86" selection-start-line="66" selection-start-column="86" selection-end-line="66" selection-end-column="86" />
           <folding>
             <element signature="imports" expanded="true" />
