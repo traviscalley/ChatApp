@@ -125,8 +125,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
 
     public void addMessage(long mid, RemoteMessage msg) throws RemoteException {
         messages.putIfAbsent(mid, msg);
-        if (msg.getParent() == 0)
-            rootMessages.add(mid);
+        rootMessages.add(mid);
     }
 
     public int likeMessage(long id) throws RemoteException {

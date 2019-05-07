@@ -147,7 +147,7 @@ public class ChatClient {
     // ==================== END OF METHODS TO HANDLE CLI ====================
 
     public static void main(String[] args) throws Exception {
-        String service = "rmi://" + args[1] + ":" + args[2] + "/" + ChatServerApp.CHATROOM_NAME;
+        String service = "rmi://" + args[0] + ":" + args[1] + "/" + ChatServerApp.CHATROOM_NAME;
         ChatClient client = new ChatClient(service);
         System.out.println("Welcome to our ChatServer!");
         Scanner scanner = new Scanner(System.in);
