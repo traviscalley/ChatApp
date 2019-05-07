@@ -18,7 +18,7 @@ helpText = """
 6 <roomId> <messageId> - like message
 7 <roomId> <messageId> - dislike message
 8 - print stats
-9 <roomId> <additional roomId (optional)> <parentId or 0> - create message
+9 <roomId> <parentId or 0> - create message
 """
 
 def sendSocket(message):
