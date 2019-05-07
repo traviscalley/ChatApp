@@ -109,6 +109,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
             return -1;
         }
 
+        synchronized (this) {
         RemoteMessage newMsg;
         try {
             newMsg = new Message(parentID, content, messageID.getAndIncrement(), user);
@@ -121,6 +122,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
             messages.get(parentID).addChild(newMsg.getId());
         messages.putIfAbsent(newMsg.getId(), newMsg);
         return newMsg.getId();
+        }
     }
 
     public void addMessage(long mid, RemoteMessage msg) throws RemoteException {

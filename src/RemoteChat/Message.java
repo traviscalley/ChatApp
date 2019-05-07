@@ -52,39 +52,25 @@ public class Message extends UnicastRemoteObject implements RemoteMessage {
         return deleted;
     }
 
-    public synchronized boolean isDeleted() {
-        return deleted;
-    }
+    public synchronized boolean isDeleted() { return deleted; }
 
-    public synchronized long getId() {
-        return id;
-    }
+    public synchronized long getId() { return id; }
 
-    public synchronized long getParent() {
-        return parent;
-    }
+    public synchronized long getParent() { return parent; }
 
     public synchronized User getUser() {
         return poster;
     }
 
-    public synchronized String getContent() {
-        return content;
-    }
+    public synchronized String getContent() { return content; }
 
-    public synchronized List<Long> getChildren() {
-        return children;
-    }
+    public synchronized List<Long> getChildren() { return children; }
 
-    public synchronized void addChild(long id) {
-        children.add(id);
-    }
+    public synchronized void addChild(long id) { children.add(id); }
 
     public String print(){
         if (deleted)
             return poster.name + "'s message was deleted because of too many dislikes!";
         return poster.name + ": " + "[" + getLikes() + "] - " + getContent() + " - [" + getId() + "]";
     }
-
-    //TODO: define equality and hash
 }

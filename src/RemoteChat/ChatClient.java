@@ -13,28 +13,21 @@ public class ChatClient {
 
     private final Chatroom chatroom;
     private final ChatServer server;
+    private static final String helpText =
+            "1 <roomname> - create room\n" +
+            "2 <userId> <roomId> - add user to room\n" +
+            "3 <userId> <roomId> - remove user to room\n" +
+            "4 <userId> <roomId> - block user to room\n" +
+            "5 <roomId> - print contents of room\n" +
+            "6 <roomId> <messageId> - like message\n" +
+            "7 <roomId> <messageId> - dislike message\n" +
+            "8 - print stats\n" +
+            "9 <roomId> <additional roomId (optional)> <parentId or 0> - create message\n" +
+            "10 <srcRoomID> <destRoomID> <msgID> - copy a message\n";
 
     private ChatClient(String service) throws RemoteException, NotBoundException, MalformedURLException {
-        //chatroom = (Chatroom)java.rmi.Naming.lookup(service);
         server = (ChatServer) java.rmi.Naming.lookup(service);
         chatroom = new LocalChatroom("Client's Room");
-    }
-
-    private void addUser(User user) throws RemoteException {
-        System.out.printf("user added: %d%n", chatroom.addUser(user));
-    }
-
-    private void removeUser(User user) throws RemoteException {
-        System.out.printf("user removed with id: %d%n", chatroom.removeUser(user));
-    }
-
-    private void blockUser(User user) throws RemoteException {
-        System.out.printf("user blocked with id: %d%n", chatroom.blockUser(user));
-    }
-
-    private void sendMessage(User user, Message msg) throws RemoteException {
-        chatroom.createMessage(msg.getContent(), msg.getParent(), user.id);
-        System.out.println(user.name + ": " + msg.getContent() + " was sent");
     }
 
     public static void main(String[] args) throws Exception {
@@ -69,7 +62,7 @@ public class ChatClient {
                 }
                 // 1 <roomname> - create room
                 else if (line.startsWith("1")) {
-                    String input[]  = line.split(" ");
+                    String[] input  = line.split(" ");
 
                     if (input.length != 2)
                         throw new IllegalArgumentException("");
@@ -187,18 +180,7 @@ public class ChatClient {
                             " and sent to " + rooms.size() + " room(s)");
                 }
                 else if (line.startsWith("?")) {
-                    StringBuffer buf = new StringBuffer();
-                    buf.append("1 <roomname> - create room\n" +
-                            "2 <userId> <roomId> - add user to room\n" +
-                            "3 <userId> <roomId> - remove user to room\n" +
-                            "4 <userId> <roomId> - block user to room\n" +
-                            "5 <roomId> - print contents of room\n" +
-                            "6 <roomId> <messageId> - like message\n" +
-                            "7 <roomId> <messageId> - dislike message\n" +
-                            "8 - print stats\n" +
-                            "9 <roomId> <additional roomId (optional)> <parentId or 0> - create message\n" +
-                            "10 <srcRoomID> <destRoomID> <msgID>\n");
-                    System.out.println(buf.toString());
+                    System.out.println(helpText);
                 }
             } catch (ChatException e) {
                     System.out.printf("chat exception: %s%n", e.getMessage());
