@@ -16,8 +16,8 @@ public class Message extends UnicastRemoteObject implements RemoteMessage {
     private final long parent;
     private final User poster;
     private String content;
-    private final ArrayList<Long> children;
-    private final LinkedBlockingQueue<Long> replies;
+    private final ArrayList<RemoteMessage> children;
+    private final LinkedBlockingQueue<RemoteMessage> replies;
 
     public Message(long parent, String message, long id, User user) throws RemoteException {
         synchronized (this) {
@@ -69,14 +69,14 @@ public class Message extends UnicastRemoteObject implements RemoteMessage {
 
     public synchronized String getContent() { return content; }
 
-    public synchronized List<Long> getChildren() { return children; }
+    public synchronized List<RemoteMessage> getChildren() { return children; }
 
-    public synchronized void addChild(long id) {
+    public synchronized void addChild(RemoteMessage id) {
         children.add(id);
         replies.add(id);
     }
 
-    public Long getReply() throws RemoteException {
+    public RemoteMessage getReply() throws RemoteException {
         try {
             return replies.take(); //blocks
         } catch(InterruptedException e){

@@ -95,6 +95,6 @@ public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
         LocalChatroom src = rooms.get(srcID);
         LocalChatroom dest = rooms.get(destID);
         RemoteMessage msg = src.getMessage(mID);
-        dest.addMessage(mID, msg);
+        dest.addMessage(msg.getId(), msg);
     }
 }

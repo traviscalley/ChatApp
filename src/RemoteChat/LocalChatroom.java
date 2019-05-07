@@ -21,20 +21,18 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         users = new ConcurrentHashMap<>();
         blockedUsers = new ConcurrentHashMap<>();
         messages = new ConcurrentHashMap<>();
-        //messageID = new AtomicLong(1);
         rootMessages = new ConcurrentSkipListSet<>();
         Timer timer = new Timer();
         DislikeChecker checker = new DislikeChecker(messages);
         timer.scheduleAtFixedRate(new TimerTask() {public void run() { checker.run(); }},
-                0, 15000);
+                0, 6000);
     }
 
     private String printChatThread(RemoteMessage m, String prefix) throws RemoteException{
         StringBuilder buf = new StringBuilder("\n");
         buf.append(prefix);
         buf.append(m.print());
-        for(long id : m.getChildren()){
-            var child = getMessage(id);
+        for(RemoteMessage child : m.getChildren()){
             buf.append(printChatThread(child, prefix + "    "));
         }
         return buf.toString();
@@ -117,7 +115,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         if(parentID < 1)
             rootMessages.add(newMsg.getId());
         else
-            messages.get(parentID).addChild(newMsg.getId());
+            messages.get(parentID).addChild(newMsg);
         messages.putIfAbsent(newMsg.getId(), newMsg);
         return newMsg.getId();
         }

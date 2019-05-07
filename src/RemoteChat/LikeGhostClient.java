@@ -3,9 +3,9 @@ package RemoteChat;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class LikeGhostClient {
     private final ChatServer server;
@@ -19,28 +19,36 @@ public class LikeGhostClient {
     private static class LikeTask extends TimerTask {
         User usr;
         Chatroom room;
+        Queue<RemoteMessage> messages;
+        Set<Long> ids;
 
         LikeTask(User usr, Chatroom room) {
             this.usr = usr;
             this.room = room;
+            messages = new ConcurrentLinkedQueue<>();
+            ids = new ConcurrentSkipListSet<>();
         }
 
         @Override
         public void run() {
             try {
-                long[] messages = room.getRootMessages();
-                if (messages.length > 0) {
-                    for (long message: messages) {
-                        List<Long> msgs = room.getMessage(message).getChildren();
-                        for (Long mid: msgs) {
-                            room.getMessage(mid).like();
+                for (long mid : room.getRootMessages()) {
+                    if (!ids.contains(mid)) {
+                        messages.add(room.getMessage(mid));
+                        ids.add(mid);
+                    }
+                }
+                for (RemoteMessage msg: messages) {
+                    msg.dislike();
+                    for (RemoteMessage child : msg.getChildren()) {
+                        if (!ids.contains(child.getId())) {
+                            messages.add(child);
+                            ids.add(child.getId());
                         }
                     }
                 }
             } catch (RemoteException e) {
                 e.printStackTrace();
-            } catch (NullPointerException e) {
-                // do nothing but wait for messages
             }
         }
     }
@@ -48,28 +56,36 @@ public class LikeGhostClient {
     private static class DislikeTask extends TimerTask {
         User usr;
         Chatroom room;
+        Queue<RemoteMessage> messages;
+        Set<Long> ids;
 
         DislikeTask(User usr, Chatroom room) {
             this.usr = usr;
             this.room = room;
+            messages = new ConcurrentLinkedQueue<>();
+            ids = new ConcurrentSkipListSet<>();
         }
 
         @Override
         public void run() {
             try {
-                long[] messages = room.getRootMessages();
-                if (messages.length > 0) {
-                    for (long message: messages) {
-                        List<Long> msgs = room.getMessage(message).getChildren();
-                        for (Long mid: msgs) {
-                            room.getMessage(mid).dislike();
+                for (long mid : room.getRootMessages()) {
+                    if (!ids.contains(mid)) {
+                        messages.add(room.getMessage(mid));
+                        ids.add(mid);
+                    }
+                }
+                for (RemoteMessage msg: messages) {
+                    msg.dislike();
+                    for (RemoteMessage child : msg.getChildren()) {
+                        if (!ids.contains(child.getId())) {
+                            messages.add(child);
+                            ids.add(child.getId());
                         }
                     }
                 }
             } catch (RemoteException e) {
                 e.printStackTrace();
-            } catch (NullPointerException e) {
-                // do nothing but wait for messages
             }
         }
     }
@@ -92,13 +108,8 @@ public class LikeGhostClient {
         User usr1 = client.server.getUser(did1);
         Timer disTimer1 = new Timer();
 
-        long did2 = client.server.createUser("Dislike Ghost 2");
-        User usr2 = client.server.getUser(did2);
-        Timer disTimer2 = new Timer();
-
-        likeTimer.scheduleAtFixedRate(new LikeTask(likeUsr, ghostRoom), 0, 5000);
-        disTimer1.scheduleAtFixedRate(new DislikeTask(usr1, ghostRoom), 0, 5000);
-        disTimer2.scheduleAtFixedRate(new DislikeTask(usr2, ghostRoom), 0 ,5000);
+        likeTimer.scheduleAtFixedRate(new LikeTask(likeUsr, ghostRoom), 0, 2000);
+        disTimer1.scheduleAtFixedRate(new DislikeTask(usr1, ghostRoom), 0, 1600);
 
         Timer printTimer = new Timer();
         printTimer.scheduleAtFixedRate(new TimerTask() {
@@ -110,6 +121,6 @@ public class LikeGhostClient {
                     e.printStackTrace();
                 }
             }
-        }, 0, 8000);
+        }, 0, 4000);
     }
 }
