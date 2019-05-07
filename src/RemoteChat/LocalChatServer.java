@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
     private static final long serialVersionUID = 2922902607870763074L;
     private final ConcurrentHashMap<Long, User> users;
+    private final ConcurrentHashMap<Long, Integer> totMessages;
     private final ConcurrentHashMap<Long, LocalChatroom> rooms;
     private final AtomicLong nextUserID;
     private final AtomicLong nextRoomID;
