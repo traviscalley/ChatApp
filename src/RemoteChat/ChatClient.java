@@ -185,7 +185,6 @@ public class ChatClient {
 
                     System.out.println("Message was created with id " + mid +
                             " and sent to " + rooms.size() + " room(s)");
-                    client.server.incrementMessages(id);
                 }
             } catch (ChatException e) {
                     System.out.printf("chat exception: %s%n", e.getMessage());
