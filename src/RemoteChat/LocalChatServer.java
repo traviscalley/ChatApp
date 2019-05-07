@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
     private static final long serialVersionUID = 2922902607870763074L;
     private final ConcurrentHashMap<Long, User> users;
+    private final ConcurrentHashMap<Long, Integer> totMessages;
     private final ConcurrentHashMap<Long, LocalChatroom> rooms;
     private final AtomicLong nextUserID;
     private final AtomicLong nextRoomID;
@@ -17,6 +18,7 @@ public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
     LocalChatServer() throws RemoteException {
         users = new ConcurrentHashMap<>();
         rooms = new ConcurrentHashMap<>();
+        totMessages = new ConcurrentHashMap<>();
         nextUserID = new AtomicLong(1);
         nextRoomID = new AtomicLong(1);
     }
@@ -78,5 +80,21 @@ public class LocalChatServer extends UnicastRemoteObject implements ChatServer {
         long id = nextRoomID.getAndIncrement();
         rooms.put(id, room);
         return id;
+    }
+
+    public synchronized int incrementMessages(long id) {
+        totMessages.putIfAbsent(id, 0);
+        int num = totMessages.get(id);
+        num += 1;
+        totMessages.put(id, num);
+        return num;
+
+    }
+
+    public void copyMessage(long srcID, long destID, long mID) throws RemoteException {
+        LocalChatroom src = rooms.get(srcID);
+        LocalChatroom dest = rooms.get(destID);
+        RemoteMessage msg = src.getMessage(mID);
+        dest.addMessage(mID, msg);
     }
 }

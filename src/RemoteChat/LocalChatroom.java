@@ -32,7 +32,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     }
 
     private String printChatThread(RemoteMessage m, String prefix) throws RemoteException{
-        var buf = new StringBuffer("\n");
+        StringBuilder buf = new StringBuilder("\n");
         buf.append(prefix);
         buf.append(m.print());
         for(long id : m.getChildren()){
@@ -121,6 +121,12 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
             messages.get(parentID).addChild(newMsg.getId());
         messages.putIfAbsent(newMsg.getId(), newMsg);
         return newMsg.getId();
+    }
+
+    public void addMessage(long mid, RemoteMessage msg) throws RemoteException {
+        messages.putIfAbsent(mid, msg);
+        if (msg.getParent() == 0)
+            rootMessages.add(mid);
     }
 
     public int likeMessage(long id) throws RemoteException {

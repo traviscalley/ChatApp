@@ -38,4 +38,8 @@ public interface ChatServer extends Remote
 
     long createChatRoom(String name) throws RemoteException;
 
+    int incrementMessages(long id) throws RemoteException;
+
+    void copyMessage(long srcID, long destID, long mID) throws RemoteException;
+
 }
