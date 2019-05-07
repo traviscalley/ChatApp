@@ -148,24 +148,23 @@ public class ChatClient {
 
     public static void main(String[] args) throws Exception {
         String service = "rmi://127.0.0.1:" + 51350 + "/" + ChatServerApp.CHATROOM_NAME;
-
         ChatClient client = new ChatClient(service);
-            System.out.println("Welcome to our ChatServer!");
-            Scanner scanner = new Scanner(System.in);
-            String line;
+        System.out.println("Welcome to our ChatServer!");
+        Scanner scanner = new Scanner(System.in);
+        String line;
 
-            System.out.println("What's your name?");
-            String usrName = scanner.nextLine();
-            long id = client.server.createUser(usrName);
-            User user = client.server.getUser(id);
-            System.out.println("Your name is " + user.name + " and id is "
-                    + user.id);
+        System.out.println("What's your name?");
+        String usrName = scanner.nextLine();
+        long id = client.server.createUser(usrName);
+        User user = client.server.getUser(id);
+        System.out.println("Your name is " + user.name + " and id is "
+                + user.id);
 
-            while (scanner.hasNextLine()) {
-                line = scanner.nextLine();
-                String[] input = line.split(" ");
+        while (scanner.hasNextLine()) {
+            line = scanner.nextLine();
+            String[] input = line.split(" ");
 
-                try {
+            try {
                 // 10 <srcRoomID> <destRoomID> <msgID> - copy a message
                 if(line.startsWith("10"))
                     client.copyMessageFromInput(input);
