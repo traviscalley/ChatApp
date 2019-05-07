@@ -7,13 +7,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MessageGhostClient {
-    private final Chatroom chatroom;
     private final ChatServer server;
 
     private MessageGhostClient(String service) throws RemoteException,
             NotBoundException, MalformedURLException {
         server = (ChatServer) java.rmi.Naming.lookup(service);
-        chatroom = new LocalChatroom("Client's Room");
     }
 
     private static class GhostTask extends TimerTask {

@@ -3,27 +3,24 @@ package RemoteChat;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class LikeGhostClient {
-    private final Chatroom chatroom;
     private final ChatServer server;
 
     private LikeGhostClient(String service) throws RemoteException,
             NotBoundException, MalformedURLException
     {
         server = (ChatServer) java.rmi.Naming.lookup(service);
-        chatroom = new LocalChatroom("Client's Room");
     }
 
     private static class LikeTask extends TimerTask {
         User usr;
         Chatroom room;
 
-        LikeTask(User usr, Chatroom chatroom) {
+        LikeTask(User usr, Chatroom room) {
             this.usr = usr;
             this.room = room;
         }
@@ -33,9 +30,9 @@ public class LikeGhostClient {
             try {
                 long[] messages = room.getRootMessages();
                 if (messages.length > 0) {
-                    for (int i = 0; i < messages.length; i++) {
-                        List<Long> msgs = room.getMessage(messages[i]).getChildren();
-                        for ( Long mid : msgs) {
+                    for (long message: messages) {
+                        List<Long> msgs = room.getMessage(message).getChildren();
+                        for (Long mid: msgs) {
                             room.getMessage(mid).like();
                         }
                     }
@@ -62,9 +59,9 @@ public class LikeGhostClient {
             try {
                 long[] messages = room.getRootMessages();
                 if (messages.length > 0) {
-                    for (int i = 0; i < messages.length; i++) {
-                        List<Long> msgs = room.getMessage(messages[i]).getChildren();
-                        for ( Long mid : msgs) {
+                    for (long message: messages) {
+                        List<Long> msgs = room.getMessage(message).getChildren();
+                        for (Long mid: msgs) {
                             room.getMessage(mid).dislike();
                         }
                     }

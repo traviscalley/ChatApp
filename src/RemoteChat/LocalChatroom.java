@@ -15,17 +15,15 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     private Map<Long, RemoteMessage> messages; // key: message ID
     private Set<Long> rootMessages;
     private static final AtomicLong messageID = new AtomicLong(1);
-    private final Timer timer;
 
-
-    public LocalChatroom(String name) throws RemoteException {
+    LocalChatroom(String name) throws RemoteException {
         this.name = name;
         users = new ConcurrentHashMap<>();
         blockedUsers = new ConcurrentHashMap<>();
         messages = new ConcurrentHashMap<>();
         //messageID = new AtomicLong(1);
         rootMessages = new ConcurrentSkipListSet<>();
-        timer = new Timer();
+        Timer timer = new Timer();
         DislikeChecker checker = new DislikeChecker(messages);
         timer.scheduleAtFixedRate(new TimerTask() {public void run() { checker.run(); }},
                 0, 15000);
@@ -43,7 +41,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
     }
 
     public String print() throws RemoteException {
-        var buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("== Room: ");
         buf.append(name);
         buf.append(" ==\n");
@@ -94,7 +92,7 @@ public class LocalChatroom extends UnicastRemoteObject implements Chatroom {
         return messages.get(id);
     }
 
-    public Map<Long, RemoteMessage> getMessageMap() throws RemoteException {
+    Map<Long, RemoteMessage> getMessageMap() throws RemoteException {
         return Collections.unmodifiableMap(messages);
     }
 
