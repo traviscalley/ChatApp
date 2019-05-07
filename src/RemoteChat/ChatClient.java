@@ -186,6 +186,20 @@ public class ChatClient {
                     System.out.println("Message was created with id " + mid +
                             " and sent to " + rooms.size() + " room(s)");
                 }
+                else if (line.startsWith("?")) {
+                    StringBuffer buf = new StringBuffer();
+                    buf.append("1 <roomname> - create room\n" +
+                            "2 <userId> <roomId> - add user to room\n" +
+                            "3 <userId> <roomId> - remove user to room\n" +
+                            "4 <userId> <roomId> - block user to room\n" +
+                            "5 <roomId> - print contents of room\n" +
+                            "6 <roomId> <messageId> - like message\n" +
+                            "7 <roomId> <messageId> - dislike message\n" +
+                            "8 - print stats\n" +
+                            "9 <roomId> <additional roomId (optional)> <parentId or 0> - create message\n" +
+                            "10 <srcRoomID> <destRoomID> <msgID>\n");
+                    System.out.println(buf.toString());
+                }
             } catch (ChatException e) {
                     System.out.printf("chat exception: %s%n", e.getMessage());
                 }
